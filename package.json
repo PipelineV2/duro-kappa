@@ -1,0 +1,16 @@
+{
+  "name": "fs-monorepo",
+  "version": "1.0.0",
+  "description": "Sample fulstack monorepo",
+  "main": "index.js",
+  "preinstall": "npx only-allow pnpm",
+  "scripts": {
+    "start": "pnpm --stream -r start",
+    "start:dev": "pnpm --parallel --stream -r run start:dev",
+    "build": "pnpm --stream -r run build",
+    "clean": "pnpm -r run clean"
+  },
+  "keywords": [],
+  "author": "chaluwa@gmail.com",
+  "license": "MIT"
+}
