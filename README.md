@@ -1,9 +1,11 @@
 # DURO by team kappa
 
-## problem statement
-It is time to move away from people self-organising by writing names on paper and assigning numbers to themselves, to queue up to be attended to.
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/57e3873561594453a85d0a2a015949e4)](https://app.codacy.com/gh/PipelineV2/duro-kappa/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
-Customers use Duro to make an appointment and join a virtual queue, all by scanning a QR code or sending SMS to a mobile number when they arrive at the venue. 
+## Description
+It is time to move away from people self-organising (by writing names on paper and assigning numbers to themselves) or randomly storming an office, hoping to be attended to.
+
+Customers will use Duro to make an appointment and join a virtual queue, by filling a form, scanning a QR code or sending SMS to a mobile number. 
 
 They then get assigned a spot on the queue and receive tailored communication (SMS or notifications) to ensure they get in, only when it’s their turn. No more crowded waiting rooms. No more jumping the queue. No more disgruntled customers putting pressure on maxed-out staff.
 
