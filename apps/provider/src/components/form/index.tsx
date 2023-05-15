@@ -1,11 +1,9 @@
-import React, { ComponentType } from 'react';
-import { Formik, FormikValues, useFormikContext } from 'formik';
-import { Button } from "@/components/button"
+'use client'
 
-type SubmitButtonProps = {
-	text?: string
-	children?: React.ReactNode
-}
+import React from 'react';
+import { Formik, FormikHelpers, FormikValues, useFormikContext } from 'formik';
+import SubmitButton from "./submitButton"
+import Input from './input';
 
 type FormSetupProps<T, V> = {
 	initialValues: T & FormikValues
@@ -14,15 +12,26 @@ type FormSetupProps<T, V> = {
 
 type FormProps<T> = {
 	children: React.ReactNode,
-	submit: (values: T) => void
+	submit: (values: T) => Promise<any>
 }
 
 export default function createForm<T, V>({ initialValues, validationSchema }: FormSetupProps<T, V>) {
 	function Wrapper({ children, submit }: FormProps<T>) {
+		const onSubmit = (values: T & FormikValues, helpers: FormikHelpers<T & FormikValues>) => {
+			submit(values)
+				.finally(() => {
+					// i'm using this settimeout to simulate an async reply
+					setTimeout(() => {
+						console.log('asfd')
+						helpers.setSubmitting(false);
+					}, 3000)
+				})
+		}
+
 		return (
 			<Formik
+				onSubmit={onSubmit}
 				initialValues={initialValues}
-				onSubmit={submit}
 				validationSchema={validationSchema}
 			>
 				{children}
@@ -30,15 +39,9 @@ export default function createForm<T, V>({ initialValues, validationSchema }: Fo
 		)
 	}
 
-	Wrapper.Submit = ({ text, children }: SubmitButtonProps) => {
-		const { submitForm } = useFormikContext();
+	Wrapper.Input = Input;
 
-		return (
-			<Button onClick={() => submitForm()}>
-				{children ?? text ?? "Submit"}
-			</Button>
-		);
-	}
+	Wrapper.Submit = SubmitButton;
 
 	return Wrapper;
 }

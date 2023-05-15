@@ -1,6 +1,8 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
 import Header from '@/components/header'
+import Providers from '@/providers'
+import 'react-toastify/dist/ReactToastify.css';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
@@ -17,7 +19,11 @@ export default function RootLayout({
 		<html lang="en">
 			<body className={inter.className}>
 				<Header title="DURO" />
-				{children}
+				<Providers>
+					<div className='w-full flex'>
+						{children}
+					</div>
+				</Providers>
 			</body>
 		</html>
 	)

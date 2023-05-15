@@ -1,42 +1,43 @@
 'use client'
 
 import * as Yup from 'yup';
-import { Input } from "@/components/input";
+import { toast } from 'react-toastify';
 import createForm from "@/components/form";
+import { AuthContextType, useAuthContext } from '@/contexts/auth.context';
+import { OnboardingInputType } from '@/models/auth';
 
 const validationSchema = Yup.object({
-	business_nam: Yup.string(),
-	location: Yup.string(),
-	//  closing_time: Yup.string()
+	business_name: Yup.string().required(),
+	location: Yup.string().required(),
 })
 
 function Page() {
-	type Values = {
-		business_name: string
-		location: string
-	}
-	const initialValues: Values = {
-		business_name: "",
-		location: "",
-		// closing_time: ""
-	};
-	const Form = createForm<Values, typeof validationSchema>({ initialValues, validationSchema })
+	const { onboard }: AuthContextType = useAuthContext();
+	const Form = createForm<OnboardingInputType, typeof validationSchema>({
+		initialValues: {
+			business_name: "",
+			location: "",
+		},
+		validationSchema
+	});
 
-	const submitForm = (values: Values) => {
-		console.log(values);
+	const submitForm = async (values: OnboardingInputType) => {
+		try {
+			toast.success("you have been successfully onboarded.")
+			return await onboard(values);
+		} catch (error) {
+			console.log(error);
+			toast.error("you encountered an error while onboarding... please try again or contact support.")
+		}
 	}
 
 	return (
-		<div>
+		<div className="w-[10rem] h-max mx-auto mt-[2rem]">
 			<Form submit={submitForm}>
-				<div>
-					<Input name="business_name" />
-					<Input name="location" />
-					{/* <Input name="closing_time" /> */}
-
-					<Form.Submit>
-						submit form
-					</Form.Submit>
+				<div className="space-y-[18px]">
+					<Form.Input placeholder="Book of life Inc." name="business_name" />
+					<Form.Input placeholder="Paradise" name="location" />
+					<Form.Submit text="submit form!" />
 				</div>
 			</Form>
 		</div>
