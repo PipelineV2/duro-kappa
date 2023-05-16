@@ -38,8 +38,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-
-  run-tests:
-    steps:
       - name: Run tests
         run: pnpm run test:ci
+
