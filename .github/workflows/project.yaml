@@ -2,7 +2,7 @@ name: duro by team kapppa
 run-name: ${{ github.actor }} 
 on: [push]
 jobs:
-  cache-and-install:
+  install_and_test:
     runs-on: ubuntu-latest
 
     steps:
