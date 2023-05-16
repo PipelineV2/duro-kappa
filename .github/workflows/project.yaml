@@ -38,6 +38,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Build projects
+        run: pnpm run build
+
+      - name: Start all startable services... for testing.
+        run: pnpm run start
+
       - name: Run tests
         run: pnpm run test:ci
 
