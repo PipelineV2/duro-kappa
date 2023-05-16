@@ -9,7 +9,7 @@
     "start:dev": "pnpm --parallel --stream -r run start:dev",
     "build": "pnpm --stream -r run build",
     "clean": "pnpm -r run clean",
-    "test:ci": "pnpm --filter provider backend --stream -r run build"
+    "test:ci": "pnpm --stream -r run test:ci"
   },
   "keywords": [],
   "author": "chaluwa@gmail.com",
