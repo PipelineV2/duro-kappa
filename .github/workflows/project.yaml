@@ -25,7 +25,7 @@ jobs:
         run: pnpm run build
 
       - name: start projects
-        run: pnpm run start
+        run: pnpm run start &
 
       - name: run tests
         run: pnpm run test:ci
