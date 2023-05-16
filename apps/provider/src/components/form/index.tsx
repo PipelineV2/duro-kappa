@@ -3,21 +3,28 @@ import { Formik, FormikHelpers, FormikValues } from 'formik';
 import SubmitButton from "./submitButton"
 import Input from './input';
 
-type FormSetupProps<T, V> = {
+export type FormSetupProps<T, V> = {
 	initialValues: T & FormikValues
 	validationSchema: V
 }
 
-type FormProps<T> = {
+export type FormProps<T> = {
 	children: React.ReactNode,
-	submit: (values: T) => Promise<any>
+	submit: (values: T) => Promise<any> | void
 }
 
-export default function createForm<T, V>({ initialValues, validationSchema }: FormSetupProps<T, V>) {
-	function Wrapper({ children, submit }: FormProps<T>) {
+export type FormSetup<T> = {
+	(props: FormProps<T>): React.ReactElement
+} & {
+	Input: typeof Input
+	Submit: typeof SubmitButton
+}
+
+export default function createForm<T, V>({ initialValues, validationSchema }: FormSetupProps<T, V>): FormSetup<T> {
+	function Wrapper({ children, submit }: FormProps<T>): React.ReactElement {
 		const onSubmit = (values: T & FormikValues, helpers: FormikHelpers<T & FormikValues>) => {
 			submit(values)
-				.finally(() => {
+				?.finally(() => {
 					// i'm using this settimeout to simulate an async reply
 					setTimeout(() => {
 						console.log('asfd')

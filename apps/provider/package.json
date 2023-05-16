@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:ci": "npm run test:components && npm run test:e2e",
+    "test:components": "cypress run --component",
+    "test:e2e": "cypress run"
   },
   "dependencies": {
     "@types/node": "20.1.1",
