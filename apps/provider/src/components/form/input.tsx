@@ -1,7 +1,7 @@
 import React from "react"
 import { Field, FieldProps } from "formik"
 
-export default ({ name, ...props }: React.InputHTMLAttributes<HTMLInputElement>) => {
+const Input = ({ name, ...props }: React.InputHTMLAttributes<HTMLInputElement>) => {
 	return (
 		<Field name={name}>
 			{({ field, meta }: FieldProps) => (
@@ -15,3 +15,5 @@ export default ({ name, ...props }: React.InputHTMLAttributes<HTMLInputElement>)
 		</Field>
 	)
 }
+
+export default Input;

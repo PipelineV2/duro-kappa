@@ -1,13 +1,14 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { Button } from "@/components/button"
+import { defaultMaxListeners } from 'events';
 
 type SubmitButtonProps = {
 	text?: string
 	children?: React.ReactNode
 }
 
-export default ({ children, ...props }: SubmitButtonProps) => {
+const SubmitButton = ({ children, ...props }: SubmitButtonProps) => {
 	const { submitForm, isSubmitting } = useFormikContext();
 
 	return (
@@ -21,4 +22,6 @@ export default ({ children, ...props }: SubmitButtonProps) => {
 		</Button>
 	);
 }
+
+export default SubmitButton;
 

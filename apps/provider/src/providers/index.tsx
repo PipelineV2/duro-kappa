@@ -2,7 +2,7 @@
 
 import { AuthProvider } from "@/contexts/auth.context"
 
-export default ({ children }: { children: React.ReactNode }) => {
+const Providers = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<AuthProvider>
 			{children}
@@ -10,3 +10,4 @@ export default ({ children }: { children: React.ReactNode }) => {
 	)
 }
 
+export default Providers;

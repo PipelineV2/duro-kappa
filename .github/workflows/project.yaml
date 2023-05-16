@@ -35,15 +35,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build projects
-        run: pnpm run build
-
-      - name: Start all startable services... for testing.
-        run: pnpm run start
-
-      - name: Run tests
-        run: pnpm run test:ci
-
+      - name: Cypress run
+        uses: cypress-io/github-action@v3
+        with:
+          browser: chrome
+          build: pnpm run build
+          start: pnpm  start
+          wait-on: "http://localhost:3000"
+          commponent: true
