@@ -1,5 +1,5 @@
 {
-  "name": "onboard",
+  "name": "jobs",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/index.js",
@@ -13,12 +13,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/qrcode": "^1.5.0",
+    "axios": "^1.4.0",
     "database": "workspace:*",
     "express": "^4.18.2",
     "expressapp": "workspace:*",
-    "logger": "workspace:*",
+    "logger": "workspace: *",
     "notifications": "workspace:*",
+    "qrcode": "^1.5.3",
     "queue": "workspace:*",
+    "storage": "workspace:*",
     "zod": "^3.21.4"
   },
   "devDependencies": {
