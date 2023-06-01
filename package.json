@@ -26,5 +26,6 @@
   },
   "keywords": [],
   "author": "chaluwa@gmail.com",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {}
 }
