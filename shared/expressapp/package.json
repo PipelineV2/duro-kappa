@@ -16,7 +16,9 @@
     "express": "^4.18.2",
     "logger": "workspace:*",
     "morgan": "^1.10.0",
-    "notfoundmiddleware": "workspace:*"
+    "notfoundmiddleware": "workspace:*",
+    "database": "workspace:*",
+    "queue": "workspace:*"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",

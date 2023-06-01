@@ -1,4 +1,4 @@
-import express, { Router }  from "express";
+import express, { Router } from "express";
 import cors from 'cors';
 import notFoundMiddleware from 'notfoundmiddleware';
 import log from "logger";
@@ -17,8 +17,6 @@ const expressApp = (router: Router, _mw?: string[]) => {
   app.use(cors());
   app.use(express.json());
   app.use(morgan);
-
-  // TODO add express-openapi-validator
 
   app.use('/', router);
   app.use(notFoundMiddleware);
