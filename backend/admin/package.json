@@ -17,6 +17,7 @@
     "express": "^4.18.2",
     "expressapp": "workspace:*",
     "logger": "workspace:*",
+    "input-validator": "workspace:*",
     "notifications": "workspace:*",
     "queue": "workspace:*",
     "zod": "^3.21.4"
