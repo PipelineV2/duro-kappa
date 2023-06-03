@@ -11,23 +11,22 @@ export default class RabbitMq implements Queue {
   }
 
   // returns the number of messages in a queue.
-  async declareQueue<Channel>(id: QueueType): Promise<{ channel: Channel, messages: number }> {
+  async declareQueue(channel: AMQPChannel, id: QueueType): Promise<{ messages: number }> {
     try {
-      const channel = await this.client.channel()
       await this.client.exchangeDeclare(id, 'topic');
       const q = await channel.queueDeclare(id);
 
       log.info(`queue ensured: ${q.name} : with ${q.messageCount} messages. 🏖️`);
-      return { channel, messages: q.messageCount };
+      return { messages: q.messageCount };
     } catch (error: any) {
       log.error(error.message)
       throw error;
     }
   }
 
-  async ensureQueue(id: QueueType): Promise<boolean> {
+  async ensureQueue(channel: AMQPChannel, id: QueueType): Promise<boolean> {
     try {
-      await this.declareQueue(id)
+      await this.declareQueue(channel, id)
       return true;
     } catch (error: any) {
       log.error(error.message)
@@ -35,13 +34,13 @@ export default class RabbitMq implements Queue {
     }
   }
 
-  async enqueue<T>(queue: QueueType, value: T, topic?: string): Promise<void> {
-    console.log(queue, value)
-    let channel;
+  async enqueue<T>(queue: QueueType, { topic, ...value }: T & { topic: string }): Promise<void> {
+    console.log(queue, topic)
+    const channel = await this.client.channel()
     try {
-      channel = (await this.ensureQueue(queue)).channel;
+      await this.ensureQueue(channel, queue);
       const q = await channel.queue(queue);
-      await q.publish(queue, topic, JSON.stringify(value))
+      await q.publish(queue, topic ?? "", JSON.stringify(value))
       log.info("successfully enqueued notification")
     } catch (error: any) {
       log.error(error)
@@ -50,16 +49,34 @@ export default class RabbitMq implements Queue {
     }
   }
 
-  dequeue(): void {
-    console.log('dqd')
+  async dequeue<T, U>(queue: QueueType, options: T & { topic: string }): Promise<U | null> {
+    console.log(queue, options)
+    return {} as U
   }
 
-  async consume(queue: QueueType, callback: Function | Awaited<Function>): Promise<void> {
+  async dequeueItem(queue: QueueType, position: string, options: { topic: string }): Promise<string> {
+    return `${queue}.${position}.${options.topic}`;
+  }
+
+  async consume(queue: QueueType, options: { topic: string }, callback: Function | Awaited<Function>): Promise<void> {
     const channel = await this.client.channel();
-    const q = await channel.queue(queue);
+    const q = await channel.queue(`${queue}:${options.topic}`);
     await q.subscribe({ noAck: true }, async (msg: any) => {
       await callback(msg);
       // await consumer.close();
     })
+  }
+
+  async getQueue(queue: QueueType, options: { topic: string }): Promise<any[]> {
+    console.log(options.topic, queue)
+    return [];
+  }
+
+  async getIndexOf(queue: QueueType, value: string, options: { topic: string }): Promise<number> {
+    console.log(queue, value, options)
+    return 0;
+  }
+  async length(queue: QueueType): Promise<number> {
+    return queue.length;
   }
 }

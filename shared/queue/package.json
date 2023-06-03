@@ -15,8 +15,11 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "logger": "workspace:*",
     "@cloudamqp/amqp-client": "^2.1.1",
-    "dotenv": "^16.0.3"
+    "database": "workspace:*",
+    "dotenv": "^16.0.3",
+    "ioredis": "^5.3.2",
+    "logger": "workspace:*",
+    "redis": "^4.6.7"
   }
 }
