@@ -1,17 +1,12 @@
-import { NextFunction } from "express";
-import { sendError } from "expressapp/src/utils";
-import log from "logger";
+import z from 'zod';
+import validator from "input-validator";
 
-export const validator = (schema: { parse: Function }) => {
-  return (req: any, res: any, next: NextFunction) => {
-    try {
-      schema.parse(req.body);
-      return next();
-    } catch (error: any) {
-      log.error(error.message);
-      return sendError(res, "Error occured");
-    }
-  }
-}
-
+export const createMerchantValidation = validator(z.object({
+  "company_name": z.string(),
+  "location": z.string(),
+  "coordinates": z.string(),
+  username: z.string(),
+  email: z.string(),
+  password: z.string()
+}))
 
