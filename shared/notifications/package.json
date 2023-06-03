@@ -11,7 +11,9 @@
   },
   "keywords": [],
   "dependencies": {
+    "dotenv": "^16.0.3",
     "logger": "workspace:*",
+    "node-mailjet": "^6.0.2",
     "queue": "workspace:*",
     "typescript": "^5.0.4"
   },

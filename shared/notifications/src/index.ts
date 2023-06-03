@@ -1,6 +1,8 @@
 import log from "logger";
 import { EmailNotificationService } from "./impl/email";
 import { SMSNotificationService } from "./impl/sms";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 const NotificationServices = {
   "email": EmailNotificationService,
@@ -10,14 +12,14 @@ const NotificationServices = {
 
 export abstract class NotificationService {
   constructor() { }
-  abstract connect(): void
+  abstract connect(): this
   abstract sendNotification(notification: Omit<NotificationOptions, 'channel'>): Promise<void>
 }
 
 export type NotificationOptions = {
   destination: "broadcast" | string;
   message: string;
-  channel: NotificationType | "all";
+  channel: NotificationType;
 }
 export type NotificationType = keyof typeof NotificationServices;
 type NotificationServicesListType<Type> = { -readonly [Property in keyof Type]: Type[Property] }
