@@ -14,7 +14,8 @@ model Merchant {
   id           Int      @id @default(autoincrement())
   createdAt    DateTime @default(now())
   company_name String   @unique
-  Branch       Branch[]
+  branch       Branch[]
+  admin        Admin[]
 }
 
 model Branch {
@@ -26,11 +27,28 @@ model Branch {
   coordinates String
   qr_code     String?
   slug        String
+  admin       Admin?
+  current_attended Int @default(0)
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  name String 
-  email String?   @unique
-  phone String?   @unique
+  id    Int     @id @default(autoincrement())
+  name  String?
+  email String? @unique
+  phone String? @unique
+  in_queue  Boolean @default(false)
+  current_queue  String?  @default("")
+  attending_to Boolean @default(false)
+}
+
+model Admin {
+  id         Int      @id @default(autoincrement())
+  username   String
+  merchantId Int
+  merchant   Merchant @relation(fields: [merchantId], references: [id])
+  branchId   Int      @unique
+  branch     Branch   @relation(fields: [branchId], references: [id])
+  email      String
+  password   String
+  superAdmin Boolean
 }

@@ -1,4 +1,4 @@
-import { Branch, Database, User, Input, Merchant, Update } from "../models";
+import { Branch, Database, User, Admin, Input, Merchant, Update } from "../models";
 import { PrismaClient } from "@prisma/client"
 import log from "logger";
 
@@ -6,6 +6,7 @@ export class Prisma extends Database {
   connect(): Database {
     try {
       this.client = new PrismaClient()
+      log.info('connected');
       return this;
     } catch (error: any) {
       throw new Error(error.message);
@@ -66,25 +67,70 @@ export class Prisma extends Database {
     console.log(id, branch);
     return {} as Branch;
   }
+
+  // users
   async insertUser(value: Input<User>): Promise<User> {
     try {
-      return this.client.merchant.create({ data: value })
+      return this.client.user.create({ data: value })
     } catch (error: any) {
       console.log(error.message)
       throw Error(`Record cannot be inserted : ${error.message}`)
     }
   }
 
-  // users
   async getUserById(id: string): Promise<User> {
     console.log(id)
-    return {} as User;
+    try {
+      return this.client.user.findUnique({
+        where: { id: Number.parseInt(id) }
+      })
+    } catch (error: any) {
+      log.error("error occured while getting record")
+      throw error;
+    }
   }
 
-  async getUserByEmailOrPhone(obj: { email: string, phone: string }): Promise<User> {
+  async getUserByEmailOrPhone(obj: { email?: string, phone?: string }): Promise<User> {
     try {
-      const user = await this.client.user.findUnique({
+      return this.client.user.findUnique({
         where: { ...obj }
+      })
+    } catch (error) {
+      log.error('Could not get user by email or phone')
+      throw error;
+    }
+  }
+
+  async updateUserById(id: string, user: Update<User>): Promise<User> {
+    try {
+      return this.client.user.update({
+        where: { id: Number.parseInt(id) },
+        data: user
+      })
+    } catch (error: any) {
+      log.error("error occured while updating record");
+      throw error;
+    }
+  }
+
+  // admin
+  async insertAdmin(value: Input<Admin>): Promise<Admin> {
+    try {
+      return this.client.admin.create({ data: value })
+    } catch (error: any) {
+      console.log(error.message)
+      throw Error(`Record cannot be inserted : ${error.message}`)
+    }
+  }
+  async getAdminById(id: string): Promise<Admin> {
+    console.log(id)
+    return {} as Admin;
+  }
+
+  async getAdminByEmail(email: string): Promise<Admin> {
+    try {
+      const user = await this.client.admin.findUnique({
+        where: { email }
       })
       return user
     } catch (error) {
@@ -93,9 +139,9 @@ export class Prisma extends Database {
     }
   }
 
-  async updateUserById(id: string, user: Update<User>): Promise<User> {
+  async updateAdminById(id: string, user: Update<Admin>): Promise<Admin> {
     console.log(id, user)
-    return {} as User;
+    return {} as Admin;
   }
 }
 
