@@ -24,7 +24,8 @@ export const loginValidator = validator(
 export const auth = (isSuperAdmin: boolean) => async (req: any & { user: Admin }, res: Response, next: NextFunction) => {
   const database = databaseClient();
   try {
-    const { email } = req.body;
+    const { token } = req.body;
+    const { email } = token;
     if (!email)
       throw new Error(`Invalid authentication!. please provide an email"}`)
 
