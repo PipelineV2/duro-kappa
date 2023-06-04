@@ -13,12 +13,13 @@ const NotificationServices = {
 export abstract class NotificationService {
   constructor() { }
   abstract connect(): this
-  abstract sendNotification(notification: Omit<NotificationOptions, 'channel'>): Promise<void>
+  abstract sendNotification(notification: Omit<NotificationOptions, 'channel' | 'type'>): Promise<void>
 }
 
 export type NotificationOptions = {
   destination: "broadcast" | string;
-  message: string;
+  type: string
+  message: string
   channel: NotificationType;
 }
 export type NotificationType = keyof typeof NotificationServices;

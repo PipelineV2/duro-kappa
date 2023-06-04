@@ -37,7 +37,7 @@ model User {
   email String? @unique
   phone String? @unique
   in_queue  Boolean @default(false)
-  current_queue  String?  @default("")
+  current_queue  Int?
   attending_to Boolean @default(false)
 }
 
@@ -48,7 +48,7 @@ model Admin {
   merchant   Merchant @relation(fields: [merchantId], references: [id])
   branchId   Int      @unique
   branch     Branch   @relation(fields: [branchId], references: [id])
-  email      String
+  email String @unique
   password   String
   superAdmin Boolean
 }

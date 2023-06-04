@@ -14,7 +14,7 @@
   "license": "ISC",
   "devDependencies": {
     "logger": "workspace:*",
-    "prisma": "^4.14.1",
+    "prisma": "^4.15.0",
     "typescript": "^5.0.4"
   },
   "dependencies": {

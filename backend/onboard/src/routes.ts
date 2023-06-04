@@ -18,9 +18,10 @@ router.post('/merchant', validator.createMerchantValidation, async (_req, res) =
   const { username, email, password } = _req.body as Input<Admin>;
 
   try {
-    let merchant;
-    // merchant = await database.getMerchantWhere({ company_name: company_name.toLowerCase() })
-    // if(merchant) throw new Error("This merchant already exists")
+    let merchant, admin;
+    admin = await database.getAdminByEmail(email);
+    if (admin)
+      throw new Error("this email is already associated with a merchant.")
 
     merchant = await database.insertMerchant({ company_name: company_name.toLowerCase() })
     const branch = await database.insertBranch({
@@ -35,10 +36,13 @@ router.post('/merchant', validator.createMerchantValidation, async (_req, res) =
       branchId: branch.id,
       username, email, password, superAdmin: true
     })
-    await queue.enqueue(MERCHANT_REGISTRATION_QUEUE, { topic: "", value: `${branch.id}` });
+    await queue.enqueue(
+      MERCHANT_REGISTRATION_QUEUE,
+      { topic: "", value: `${branch.id}` }
+    );
 
     log.info("successfully added business to list. :", merchant.id)
-    return sendSuccess(res, "Successfully registered your business.")
+    return sendSuccess(res, "Successfully registered your business. You will get an email with details about your qr code. Thank you for using our service!")
   } catch (error: any) {
     log.error(error.message);
     return sendError(res, error.message)

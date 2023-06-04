@@ -1,6 +1,5 @@
 import queueClient, { MERCHANT_REGISTRATION_QUEUE, NOTIFICATION_QUEUE } from "queue"
 import log from "logger";
-//import { NotificationOptions } from 'notifications'
 //import storageClient from "storage";
 import databaseClient from 'database';
 import { Branch } from "database/src/models";
@@ -31,7 +30,7 @@ async function run() {
         //const url: string = await storage.upload(filename, merchant_qr)
         const url = `${merchant_url}/${filename}`
         // update the merchant's qr_code url.
-        await database.updateBusinessBranchById(`${merchant.id}`, { ...merchant, qr_code: url });
+        const business = await database.updateBusinessBranchById(`${merchant.id}`, { ...merchant, qr_code: url });
         log.info(`Successfully updated merchant with id:${merchant.id}'s qr_code: ${url}`)
 
         // enqueue notification.
@@ -41,8 +40,8 @@ async function run() {
             topic: "",
             value: JSON.stringify({
               channel: "email",
-              destination: "me",
-              message: "Congrats!!"
+              destination: business.admin.email,
+              type: "MERCHANT_REGISTRATION"
             })
           }
         )

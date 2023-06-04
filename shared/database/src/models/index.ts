@@ -3,6 +3,8 @@ export abstract class Database {
 
   protected client: any;
 
+  abstract transaction(...args: Promise<any>[]): Promise<void>
+
   // merchants
   abstract insertMerchant(merchant: Input<Merchant>): Promise<Merchant>
 
@@ -20,13 +22,15 @@ export abstract class Database {
   abstract updateBusinessBranchById(id: string, merchant: Partial<Branch>): Promise<Branch>
 
   // user
+  abstract getUsers(options: Input<User>): Promise<User[]>
+
   abstract insertUser(merchant: Input<User>): Promise<User>
 
   abstract getUserById(id: string): Promise<User>
 
   abstract getUserByEmailOrPhone(obj: { email?: string, phone?: string }): Promise<User>
 
-  abstract updateUserById(id: string, user: Update<User>): Promise<User>
+  abstract updateUserById(id: number, user: Update<User>, where?: Partial<User>): Promise<User>
 
 
   // admin
@@ -46,6 +50,7 @@ export type Update<Type> = Partial<Type>;
 export type Merchant = {
   id: number
   company_name: string
+  branch?: Branch[]
 }
 
 export type Branch = {
@@ -66,7 +71,7 @@ export type User = {
   email?: string
   phone?: string
   in_queue: boolean
-  current_queue?: string
+  current_queue?: number | null
   attending_to?: boolean
 }
 

@@ -7,12 +7,31 @@ info:
 servers:
   - url: http://petstore.swagger.io/v1
 paths:
-  /pets:
+  /onboard/merchant:
     get:
-      summary: List all pets
-      operationId: listPets
+      summary: onboard the merchants by adding a business name, and branch, and admin.
+      operationId: onbordMerchant
       tags:
-        - pets
+        - merchants
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                company_name:
+                  type: string
+                location:
+                  type: string
+                coordinates:
+                  type: string
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
       parameters:
         - name: limit
           in: query

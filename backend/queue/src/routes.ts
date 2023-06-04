@@ -28,14 +28,14 @@ router.post('/join/:merchant_branch', validator(validation), async (_req, res) =
     let user = await database.getUserByEmailOrPhone({ email });
     if (!user) {
       log.info(`User with email: ${email} was not found. Creating a new user.`);
-      user = await database.insertUser({ email, in_queue: true, current_queue: merchant_branch })
+      user = await database.insertUser({ email, in_queue: true, current_queue: Number.parseInt(merchant_branch) })
       log.info(`successfully created user with email: ${email}`)
     } else {
       log.info(`user with email: ${email} was found. yay!`)
       if (user.in_queue)
         throw new Error("You are already on a queue. You have to leave your current queue before you can join another one.");
 
-      await database.updateUserById(`${user.id}`, { in_queue: true, current_queue: merchant_branch })
+      await database.updateUserById(user.id, { in_queue: true, current_queue: Number.parseInt(merchant_branch) })
       log.info(`updated user with email: ${email} to be in queue for merchant with id: ${merchant_branch}`)
     }
 
@@ -66,7 +66,6 @@ router.post('/join/:merchant_branch', validator(validation), async (_req, res) =
 
 router.post('/leave', async (_req, res) => {
   const { token } = _req.body;
-  // validate token, extract email from token, and leave the queue. 
   const { email } = token;
 
   try {
@@ -78,18 +77,21 @@ router.post('/leave', async (_req, res) => {
     if (user.attending_to)
       throw new Error("You are currently being attended to, the admin will do the rest. Cheers!")
 
-    let merchant = await database.getBusinessBranchById(user.current_queue);
-    await database.updateBusinessBranchById(user.current_queue, { current_attended: (merchant.current_attended ?? 0) + 1 });
+    let merchant = await database.getBusinessBranchById(`${user.current_queue}`);
+    // await database.updateBusinessBranchById(`${user.current_queue}`, { current_attended: (merchant.current_attended ?? 0) + 1 });
     await queue.dequeueItem(DURO_QUEUE, `${user.id}`, { topic: `${merchant.id}` })
-    await database.updateUserById(`${user.id}`, { in_queue: false, current_queue: "", attending_to: false })
+    await database.updateUserById(user.id, { in_queue: false, current_queue: null, attending_to: false })
+
+    // maybe i shouldn't do this.
     await queue.enqueue<NotificationOptions>(NOTIFICATION_QUEUE, {
       channel: user.email ? 'email' : "sms",
       destination: user.phone ?? user.email ?? "",
+      type: "QUEUE_LEAVE",
       message: `You have now left the queue. Thank you for using this service.`
     });
 
     log.info("successfully added dequeued user to merchant list. :")
-    return sendSuccess(res, "Successfully dequeued user.");
+    return sendSuccess(res, "you have successfully left the queue. thank you for using our service! 😏");
   } catch (error: any) {
     log.error(error.message);
     return sendError(res, error.message)
@@ -110,7 +112,7 @@ router.get('/position', async (req: Request, res: Response) => {
     if (user.attending_to)
       return sendSuccess(res, "You are currently being attended to.");
 
-    const position = await queue.getIndexOf(DURO_QUEUE, `${user.id}`, { topic: user.current_queue })
+    const position = await queue.getIndexOf(DURO_QUEUE, `${user.id}`, { topic: `${user.current_queue}` })
     console.log(position);
     if (position < 0)
       throw new Error("You are currently not on the queue.")

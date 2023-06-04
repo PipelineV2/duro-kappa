@@ -2,6 +2,15 @@ import log from "logger";
 import notificationService, { NotificationOptions, NotificationService } from "notifications";
 import queueService, { NOTIFICATION_QUEUE } from "queue";
 
+const message = (type: string) => {
+  switch (type) {
+    case "MERCHANT_REGISTRATION":
+      return `congratulations, you have registered your business. you can add more branches on your dashboard.`
+    default:
+      return ``;
+  }
+};
+
 async function run() {
   try {
     const notifications = notificationService();
@@ -12,13 +21,12 @@ async function run() {
     }
 
     await queue.consume(NOTIFICATION_QUEUE, {}, async (value: string) => {
-      const { destination, channel, message } = JSON.parse(value) as NotificationOptions;
+      const { destination, channel, type } = JSON.parse(value) as NotificationOptions;
       log.info(value);
-      log.info(`${message}, ${destination}`)
+      log.info(`${type}, ${destination}`)
       try {
         const transporter: NotificationService = channels[channel];
-
-        await transporter.sendNotification({ message, destination })
+        await transporter.sendNotification({ message: message(type), destination })
       } catch (error: any) {
         log.error(error.message);
       }

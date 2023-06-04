@@ -13,19 +13,38 @@ export class Prisma extends Database {
     }
   }
 
+  async transaction(...args: Promise<Function>[]): Promise<void> {
+    try {
+      await this.client?.$transaction(args);
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
   // merchants
   async insertMerchant(merchant: Input<Merchant>): Promise<Merchant> {
     try {
+      const _merchant = await this.client.merchant.findMany({ where: { company_name: merchant.company_name } })
+      if (_merchant.length > 0)
+        throw new Error('this merchant already exists.')
+
       return this.client.merchant.create({ data: merchant })
     } catch (error: any) {
       console.log(error.message)
-      throw Error(`Merchant cannot be inserted : ${error.message}`)
+      throw new Error(`Merchant cannot be inserted : ${error.message}`)
     }
   }
 
   async getMerchantById(id: string): Promise<Merchant> {
-    console.log(id)
-    return {} as Merchant;
+    try {
+      return this.client?.merchant.findUnique({
+        where: { id },
+        include: { branch: true }
+      })
+    } catch (error: any) {
+      log.error("an error occured while getting merchant by id.")
+      throw new Error(error.message)
+    }
   }
 
   async updateMerchantById(id: string, merchant: Partial<Merchant>): Promise<Merchant> {
@@ -42,30 +61,28 @@ export class Prisma extends Database {
       return this.client.branch.create({ data: branch })
     } catch (error: any) {
       console.log(error.message)
-      throw Error(`Merchant cannot be inserted : ${error.message}`)
+      throw new Error(`Merchant cannot be inserted : ${error.message}`)
     }
   }
 
   async getBusinessBranchById(id: string): Promise<Branch> {
-    console.log('this is id', id)
     try {
       const me = await this.client.branch.findUnique({
         where: { id: Number.parseInt(id) },
         include: { merchant: true }
       });
 
-      if (me == null) throw new Error("could not find")
+      if (me == null) throw new Error(`could not find the branch with id: ${id}`)
 
       return me;
     } catch (error: any) {
       log.error(error.message);
-      throw error;
+      throw new Error(error.message);
     }
   }
 
   async updateBusinessBranchById(id: string, branch: Partial<Branch>): Promise<Branch> {
-    console.log(id, branch);
-    return {} as Branch;
+    return { id, ...branch } as Branch;
   }
 
   // users
@@ -74,19 +91,27 @@ export class Prisma extends Database {
       return this.client.user.create({ data: value })
     } catch (error: any) {
       console.log(error.message)
-      throw Error(`Record cannot be inserted : ${error.message}`)
+      throw new Error(`Record cannot be inserted : ${error.message}`)
+    }
+  }
+
+  async getUsers(options: Input<User>): Promise<User[]> {
+    try {
+      return this.client.user.findMany({ where: { ...options } })
+    } catch (error: any) {
+      log.info("error occured while getting users");
+      throw new Error(error.message);
     }
   }
 
   async getUserById(id: string): Promise<User> {
-    console.log(id)
     try {
       return this.client.user.findUnique({
         where: { id: Number.parseInt(id) }
       })
     } catch (error: any) {
       log.error("error occured while getting record")
-      throw error;
+      throw new Error(error.message);
     }
   }
 
@@ -95,21 +120,21 @@ export class Prisma extends Database {
       return this.client.user.findUnique({
         where: { ...obj }
       })
-    } catch (error) {
+    } catch (error: any) {
       log.error('Could not get user by email or phone')
-      throw error;
+      throw new Error(error.message);
     }
   }
 
-  async updateUserById(id: string, user: Update<User>): Promise<User> {
+  async updateUserById(id: number, user: Update<User>, where?: Partial<User>): Promise<User> {
     try {
-      return this.client.user.update({
-        where: { id: Number.parseInt(id) },
+      return this.client.user.updateMany({
+        where: { id, ...where },
         data: user
       })
     } catch (error: any) {
-      log.error("error occured while updating record");
-      throw error;
+      log.error("error occured while updating user record");
+      throw new Error(error.message);
     }
   }
 
@@ -119,23 +144,28 @@ export class Prisma extends Database {
       return this.client.admin.create({ data: value })
     } catch (error: any) {
       console.log(error.message)
-      throw Error(`Record cannot be inserted : ${error.message}`)
+      throw new Error(`admin record could not be inserted : ${error.message}`)
     }
   }
   async getAdminById(id: string): Promise<Admin> {
-    console.log(id)
-    return {} as Admin;
+    try {
+      return this.client.admin.findUnique({
+        where: { id }
+      })
+    } catch (error: any) {
+      log.error('Could not get user by email or phone')
+      throw new Error(error.message);
+    }
   }
 
   async getAdminByEmail(email: string): Promise<Admin> {
     try {
-      const user = await this.client.admin.findUnique({
+      return this.client.admin.findUnique({
         where: { email }
       })
-      return user
-    } catch (error) {
+    } catch (error: any) {
       log.error('Could not get user by email or phone')
-      throw error;
+      throw new Error(error.message);
     }
   }
 
