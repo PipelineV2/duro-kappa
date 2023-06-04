@@ -19,6 +19,7 @@
     "logger": "workspace:*",
     "notifications": "workspace:*",
     "input-validator": "workspace:*",
+    "auth": "workspace:*",
     "queue": "workspace:*",
     "zod": "^3.21.4"
   },

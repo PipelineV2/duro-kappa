@@ -58,10 +58,31 @@ export class Prisma extends Database {
   // branches
   async insertBranch(branch: Input<Branch>): Promise<Branch> {
     try {
+      const _branch = await this.client.branch.findMany({ where: { branch: branch.location } })
+      if (_branch)
+        throw new Error("this branch location already exisits. please contact your admin.");
+
       return this.client.branch.create({ data: branch })
     } catch (error: any) {
       console.log(error.message)
       throw new Error(`Merchant cannot be inserted : ${error.message}`)
+    }
+  }
+
+  async getBusinessBranchByBranchName(merchant: number, location: string): Promise<Branch | null> {
+    try {
+      const branches = await this.client.branch.findMany({
+        where: { location, merchantId: merchant },
+        include: { merchant: true }
+      });
+
+      if (branches.length > 0)
+        return branches[0];
+
+      return null;
+    } catch (error: any) {
+      log.error(error.message);
+      throw new Error(error.message);
     }
   }
 
@@ -117,9 +138,10 @@ export class Prisma extends Database {
 
   async getUserByEmailOrPhone(obj: { email?: string, phone?: string }): Promise<User> {
     try {
-      return this.client.user.findUnique({
+      const [result] = await this.client.user.findMany({
         where: { ...obj }
       })
+      return result;
     } catch (error: any) {
       log.error('Could not get user by email or phone')
       throw new Error(error.message);

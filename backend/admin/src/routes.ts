@@ -2,9 +2,11 @@ import { Router, Response } from 'express';
 import databaseClient from "database";
 import queueClient, { NOTIFICATION_QUEUE, DURO_QUEUE, MERCHANT_REGISTRATION_QUEUE } from "queue"
 import { sendError, sendSuccess } from 'expressapp/src/utils';
-import { loginValidator, auth } from './middleware';
+import { loginValidator } from './middleware';
 import { Admin, Input } from 'database/src/models';
 import log from "logger";
+import { adminAuth, comparePassword, hashPassword, signJWT } from "auth"
+
 
 const router = Router();
 const database = databaseClient();
@@ -13,12 +15,25 @@ database.connect();
 queue.connect();
 
 // admin logins...
-router.post('/login', loginValidator, auth(false), (_, res) => {
-  return sendSuccess(res, "Successfully logged in.");
+router.post('/login', loginValidator, async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await database.getAdminByEmail(email);
+    if (!user)
+      throw new Error("oops! invalid email and password combination.");
+
+    const isValid = await comparePassword({ hashedPassword: user.password, password });
+    if (!isValid)
+      throw new Error("oops! invalid email and password combination.")
+
+    return sendSuccess(res, "Logged in successfully!", { data: { token: signJWT({ email }) } })
+  } catch (error: any) {
+    return sendError(res, `closed sesame: ${error.message}`, { status: 401 });
+  }
 })
 
 // queue actions
-router.post('/advance-queue', auth(false), async (req: any & Admin, res: Response) => {
+router.post('/advance-queue', adminAuth(false), async (req: any & Admin, res: Response) => {
   try {
     const { userId: previousAttendedTo } = req.body;
     const { branchId, id } = req.user;
@@ -62,24 +77,28 @@ router.post('/advance-queue', auth(false), async (req: any & Admin, res: Respons
   }
 })
 
-router.get('/currently-attending-to', auth(false), async (req: any & { user: Admin }, res) => {
+router.get('/currently-attending-to', adminAuth(false), async (req: any & { user: Admin }, res) => {
   try {
     const { branchId } = req.user;
     const people = await database.getUsers({ current_queue: branchId, in_queue: true });
-    return sendSuccess(res, people);
+    return sendSuccess(res, "Suceessfully retrieved list of currently attending to", { data: people });
   } catch (error: any) {
     return sendError(res, "An error occured while getting the list of people you're currently attending to. Please try again later.")
   }
 });
 
 // SUPERADMIN JOB!
-router.post('/branch/create', auth(true), async (req: any & { user: Admin }, res: any) => {
+router.post('/branch/create', adminAuth(true), async (req: any & { user: Admin }, res: any) => {
   const { location, coordinates } = req.body;
   const { username, email, password } = req.body as Input<Admin>;
   const { merchantId } = req.user;
 
   try {
     const { id, company_name } = await database.getMerchantById(merchantId);
+    const admin = await database.getAdminByEmail(email);
+    if (admin)
+      throw new Error("this email is already attached to an admin. please try another.")
+
     const branch = await database.insertBranch({
       merchantId,
       location,
@@ -87,10 +106,11 @@ router.post('/branch/create', auth(true), async (req: any & { user: Admin }, res
       qr_code: "",
       slug: `${location.split(" ").join("_").toLowerCase()}__${company_name}`
     })
+    const _password = await hashPassword(password);
     await database.insertAdmin({
       merchantId,
       branchId: branch.id,
-      username, email, password, superAdmin: false
+      username, email, password: _password, superAdmin: false
     })
     await queue.enqueue(MERCHANT_REGISTRATION_QUEUE, branch.id);
 
@@ -102,13 +122,12 @@ router.post('/branch/create', auth(true), async (req: any & { user: Admin }, res
   }
 });
 
-router.post('/branch/list', auth(true), async (req: any & { user: Admin }, res: any) => {
+router.post('/branch/list', adminAuth(true), async (req: any & { user: Admin }, res: any) => {
   const { merchantId } = req.user;
 
   try {
     const { branch: branches } = await database.getMerchantById(merchantId);
-    console.log(branches)
-    return sendSuccess(res, { data: branches });
+    return sendSuccess(res, "Successfully retrieved branch list", { data: branches });
   } catch (error: any) {
     log.error(error.message);
     return sendError(res, error.message)

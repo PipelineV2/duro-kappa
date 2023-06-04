@@ -19,6 +19,8 @@ export abstract class Database {
 
   abstract getBusinessBranchById(id: string): Promise<Branch>
 
+  abstract getBusinessBranchByBranchName(merchant: number, location: string): Promise<Branch | null>
+
   abstract updateBusinessBranchById(id: string, merchant: Partial<Branch>): Promise<Branch>
 
   // user

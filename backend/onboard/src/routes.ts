@@ -1,6 +1,7 @@
 import log from "logger";
 import { Router } from 'express';
 import databaseClient from "database";
+import { hashPassword } from "auth";
 import { Admin, Branch, Input, Merchant } from 'database/src/models';
 import queueClient, { MERCHANT_REGISTRATION_QUEUE } from "queue"
 import { sendError, sendSuccess } from 'expressapp/src/utils';
@@ -31,10 +32,11 @@ router.post('/merchant', validator.createMerchantValidation, async (_req, res) =
       qr_code: "",
       slug: `${location.split(" ").join("_").toLowerCase()}__${company_name}`
     })
+    const hashedPassword = await hashPassword(password);
     await database.insertAdmin({
       merchantId: merchant.id,
       branchId: branch.id,
-      username, email, password, superAdmin: true
+      username, email, password: hashedPassword, superAdmin: true
     })
     await queue.enqueue(
       MERCHANT_REGISTRATION_QUEUE,

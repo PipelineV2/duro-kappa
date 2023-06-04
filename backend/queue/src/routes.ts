@@ -6,6 +6,7 @@ import queueClient, { DURO_QUEUE, NOTIFICATION_QUEUE } from "queue"
 import { sendError, sendSuccess } from 'expressapp/src/utils';
 import { NotificationOptions } from 'notifications'
 import { validator } from './middleware';
+import { signJWT, clientAuth } from "auth"
 
 const router = Router();
 const database = databaseClient();
@@ -56,15 +57,15 @@ router.post('/join/:merchant_branch', validator(validation), async (_req, res) =
     log.info('done')
     log.info(`successfully queued user with email : ${email}`)
 
-    const token = { email };
-    return sendSuccess(res, { token, message: "Successfully registered your business." })
+    const token = signJWT({ email });
+    return sendSuccess(res, "Successfully registered your business.", { data: { token } })
   } catch (error: any) {
     log.error(error.message);
     return sendError(res, error.message)
   }
 });
 
-router.post('/leave', async (_req, res) => {
+router.post('/leave', clientAuth(), async (_req, res) => {
   const { token } = _req.body;
   const { email } = token;
 
@@ -117,7 +118,7 @@ router.get('/position', async (req: Request, res: Response) => {
     if (position < 0)
       throw new Error("You are currently not on the queue.")
 
-    return sendSuccess(res, { position });
+    return sendSuccess(res, "Successfully got users position on queue.", { data: { position } });
   } catch (error: any) {
     log.error(error.message);
     return sendError(res, "An error occured, please try again later.")

@@ -20,6 +20,7 @@
     "input-validator": "workspace:*",
     "notifications": "workspace:*",
     "queue": "workspace:*",
+    "auth": "workspace:*",
     "zod": "^3.21.4"
   },
   "devDependencies": {
