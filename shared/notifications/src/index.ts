@@ -27,9 +27,10 @@ type NotificationServicesListType<Type> = { -readonly [Property in keyof Type]: 
 type NotificationServicesListType1<Type> = { -readonly [Property in keyof Type]: NotificationService }
 
 class Factory {
-  data: Partial<NotificationServicesListType1<typeof NotificationServices>> = {};
+  data: NotificationServicesListType1<typeof NotificationServices>;
 
   constructor(values: NotificationServicesListType<typeof NotificationServices>) {
+    this.data = {} as NotificationServicesListType1<typeof NotificationServices>
     for (let i of Object.keys(values)) {
       const idx = i as NotificationType;
       const Constructor = values[idx];
@@ -38,7 +39,7 @@ class Factory {
   }
 
   getInstanceOfNotificationType = (type: NotificationType): NotificationService => {
-    return new NotificationServices[type]();
+    return this.data[type];
   }
 }
 
