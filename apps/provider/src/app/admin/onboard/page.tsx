@@ -31,10 +31,10 @@ function Page() {
 
   const submitForm = async (values: OnboardMerchant) => {
     try {
-      toast.success("you have been successfully onboarded.")
-      return await onboard(values);
+      //toast.success("you have been successfully onboarded.")
+      const { message } = await onboard(values);
+      toast.success(message);
     } catch (error) {
-      console.log(error);
       toast.error("you encountered an error while onboarding... please try again or contact support.")
     }
   }

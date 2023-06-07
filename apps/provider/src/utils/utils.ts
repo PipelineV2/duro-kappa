@@ -12,7 +12,7 @@ export async function request(url: string, { method, body, withCredentials }: Re
     const options: RequestInit = { method }
 
     if (method.toLowerCase() != "get")
-      options.body = body;
+      options.body = JSON.stringify(body);
 
     if (withCredentials) {
       const token = '';
