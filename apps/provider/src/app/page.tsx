@@ -1,3 +1,4 @@
+"use client";
 import createForm from "@/components/form";
 import * as Yup from 'yup';
 import { QueueUserInputType } from '@/models/auth';
@@ -30,9 +31,11 @@ export default function Home() {
       </div>
 
       <Form submit={queue}>
-        <Form.Input placeholder="email" name="email" type="email" />
-        <Form.Input placeholder="phone" name="phone" type="tel" />
-        <Form.Submit text="submit form!" />
+        <div>
+          <Form.Input placeholder="email" name="email" type="email" />
+          <Form.Input placeholder="phone" name="phone" type="tel" />
+          <Form.Submit text="submit form!" />
+        </div>
       </Form>
     </div>
   )

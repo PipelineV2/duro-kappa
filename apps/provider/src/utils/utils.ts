@@ -1,24 +1,33 @@
-
 type RequestOptions = {
-	url: string
-	method: string
-	body?: {}
+  withCredentials?: boolean,
+  method: string,
+  body: any
 }
 
-export async function request(url: string, { method, body }: { method: string, body: {} }) {
-	try {
-		const options: RequestOptions = { url, method }
+const BASE_URL = 'http://localhost:3000';
 
-		if (method.toLowerCase() != "get")
-			options.body = body;
+export async function request(url: string, { method, body, withCredentials }: RequestOptions) {
+  try {
+    url = `${BASE_URL ?? ""}${url}`
+    const options: RequestInit = { method }
 
-		const response = await fetch(options as RequestInfo);
-		const data = await response.json();
+    if (method.toLowerCase() != "get")
+      options.body = body;
 
-		// if(!data.success) throw new Error(data.error);
-		return data;
-	} catch (error: any) {
-		throw new Error(error.message);
-	}
+    if (withCredentials) {
+      const token = '';
+      options.headers = {
+        "Authorization": `Bearer ${token}`
+      }
+    }
+
+    const response = await fetch(url, options);
+    const data = await response.json();
+
+    // if(!data.success) throw new Error(data.error);
+    return data;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
 }
 
