@@ -3,6 +3,8 @@ import log from "logger";
 import RedisClient from 'ioredis';
 import databaseClient from "database";
 import { Database } from "database/src/models";
+import _config from "config";
+const config = _config.database;
 
 export default class Redis implements Queue {
   client: RedisClient | null = null;
@@ -12,7 +14,7 @@ export default class Redis implements Queue {
   async connect(): Promise<this> {
     return new Promise((resolve, reject) => {
       try {
-        this.client = new RedisClient();
+        this.client = new RedisClient(config.connection_url);
         this.database = databaseClient().connect();
         resolve(this)
       } catch (error: any) {
@@ -23,7 +25,6 @@ export default class Redis implements Queue {
   }
 
   async enqueue<T>(queue: QueueType, { topic, value }: T & { topic: string, value: string }): Promise<void> {
-    // console.log(queue, value, topic)
     if (!this.client) return;
     try {
       await this.client.xadd(`${queue}:${topic ?? ""}`, "*", "value", value);
@@ -35,7 +36,6 @@ export default class Redis implements Queue {
 
   async dequeue<T, U>(queue: QueueType, { topic }: T & { topic: string, total?: any }): Promise<U | null> {
     try {
-      log.info(`${queue}:${topic}`)
       const queueName = `${queue}:${topic ?? ""}`;
       let response = await this.client?.xread(
         "COUNT", 1,
@@ -86,8 +86,8 @@ export default class Redis implements Queue {
 
   async getQueue(queue: QueueType, options: { topic: string }): Promise<any[]> {
     try {
-      const queueName = `${queue}:${options.topic}`;
-      const length = await this.length(queueName)
+      const queueName = `${queue}:${options.topic ?? ""}`;
+      const length = await this.length(queue, { topic: options.topic })
       const list = await this.client?.xread(
         "COUNT", length,
         "BLOCK", 5000,
@@ -122,14 +122,12 @@ export default class Redis implements Queue {
   }
 
   async consume(queue: QueueType, options: { topic: string }, callback: Function | Awaited<Function>): Promise<void> {
-    log.info('big', queue, options)
     this.consuming = true;
-
     while (this.consuming) {
       try {
-        log.info('starting dequeue.')
+        //log.info('starting dequeue.')
         let res = await this.dequeue(queue, { ...options });
-        log.info(res);
+        //log.info(res);
         if (res)
           await callback(res);
       } catch (error: any) {
@@ -139,10 +137,11 @@ export default class Redis implements Queue {
     }
   }
 
-  async length(queue: string, _options?: { read: number }): Promise<number> {
+  async length(queue: QueueType, _options: { read?: number, topic?: string }): Promise<number> {
     try {
-      const options = _options ?? { read: 0 }
-      const length = await this.client?.xlen(queue);
+      const options = { read: 0, topic: "", ..._options };
+      const queueName = `${queue}:${options.topic}`;
+      const length = await this.client?.xlen(queueName);
       if (length == undefined) throw new Error("This queue is invalid :(");
 
       return Math.abs(options?.read - length);

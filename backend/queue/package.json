@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "./dist/index.js",
+  "types": "src/index.ts",
   "scripts": {
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "build": "tsc --incremental",
@@ -19,6 +20,7 @@
     "expressapp": "workspace:*",
     "logger": "workspace:*",
     "notifications": "workspace:*",
+    "input-validator": "workspace:*",
     "queue": "workspace:*",
     "zod": "^3.21.4"
   },

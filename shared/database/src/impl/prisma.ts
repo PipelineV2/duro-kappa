@@ -1,4 +1,4 @@
-import { Branch, Database, User, Admin, Input, Merchant, Update } from "../models";
+import { Branch, Database, User, Admin, Input, Merchant, Update, Queue } from "../models";
 import { PrismaClient } from "@prisma/client"
 import log from "logger";
 
@@ -39,7 +39,22 @@ export class Prisma extends Database {
     try {
       return this.client?.merchant.findUnique({
         where: { id },
-        include: { branch: true }
+        include: {
+          branch: {
+            include: {
+              admin: {
+                select: {
+                  id: true,
+                  username: true,
+                  merchantId: true,
+                  branchId: true,
+                  email: true,
+                  superAdmin: true
+                }
+              }
+            }
+          }, admin: true
+        }
       })
     } catch (error: any) {
       log.error("an error occured while getting merchant by id.")
@@ -48,7 +63,11 @@ export class Prisma extends Database {
   }
 
   async updateMerchantById(id: string, merchant: Partial<Merchant>): Promise<Merchant> {
-    return { id, ...merchant } as Merchant;
+    return this.client.merchant.update({
+      where: { id: Number.parseInt(id) },
+      include: { branch: true, admin: true },
+      data: merchant
+    })
   }
 
   deleteMerchantById(id: string): boolean {
@@ -58,10 +77,6 @@ export class Prisma extends Database {
   // branches
   async insertBranch(branch: Input<Branch>): Promise<Branch> {
     try {
-      const _branch = await this.client.branch.findMany({ where: { branch: branch.location } })
-      if (_branch)
-        throw new Error("this branch location already exisits. please contact your admin.");
-
       return this.client.branch.create({ data: branch })
     } catch (error: any) {
       console.log(error.message)
@@ -73,7 +88,7 @@ export class Prisma extends Database {
     try {
       const branches = await this.client.branch.findMany({
         where: { location, merchantId: merchant },
-        include: { merchant: true }
+        include: { merchant: true, admin: true }
       });
 
       if (branches.length > 0)
@@ -90,7 +105,7 @@ export class Prisma extends Database {
     try {
       const me = await this.client.branch.findUnique({
         where: { id: Number.parseInt(id) },
-        include: { merchant: true }
+        include: { merchant: true, admin: true }
       });
 
       if (me == null) throw new Error(`could not find the branch with id: ${id}`)
@@ -103,7 +118,11 @@ export class Prisma extends Database {
   }
 
   async updateBusinessBranchById(id: string, branch: Partial<Branch>): Promise<Branch> {
-    return { id, ...branch } as Branch;
+    return this.client.branch.updateMany({
+      where: { id: Number.parseInt(id) },
+      include: { merchant: true, admin: true },
+      data: branch
+    })
   }
 
   // users
@@ -125,10 +144,10 @@ export class Prisma extends Database {
     }
   }
 
-  async getUserById(id: string): Promise<User> {
+  async getUserById(id: number): Promise<User> {
     try {
       return this.client.user.findUnique({
-        where: { id: Number.parseInt(id) }
+        where: { id }
       })
     } catch (error: any) {
       log.error("error occured while getting record")
@@ -136,22 +155,23 @@ export class Prisma extends Database {
     }
   }
 
-  async getUserByEmailOrPhone(obj: { email?: string, phone?: string }): Promise<User> {
+  async getUserByEmailOrPhone({ email, phone }: { email?: string, phone?: string }): Promise<User> {
     try {
-      const [result] = await this.client.user.findMany({
-        where: { ...obj }
+      const identifier = email ? 'email' : 'phone';
+      const identifier_value = email ?? phone;
+      return this.client.user.findUnique({
+        where: { [identifier]: identifier_value }
       })
-      return result;
     } catch (error: any) {
       log.error('Could not get user by email or phone')
       throw new Error(error.message);
     }
   }
 
-  async updateUserById(id: number, user: Update<User>, where?: Partial<User>): Promise<User> {
+  async updateUserById(id: number, user: Update<User>): Promise<User> {
     try {
-      return this.client.user.updateMany({
-        where: { id, ...where },
+      return this.client.user.update({
+        where: { id },
         data: user
       })
     } catch (error: any) {
@@ -172,7 +192,8 @@ export class Prisma extends Database {
   async getAdminById(id: string): Promise<Admin> {
     try {
       return this.client.admin.findUnique({
-        where: { id }
+        where: { id },
+        include: { branch: true, merchant: true }
       })
     } catch (error: any) {
       log.error('Could not get user by email or phone')
@@ -183,7 +204,8 @@ export class Prisma extends Database {
   async getAdminByEmail(email: string): Promise<Admin> {
     try {
       return this.client.admin.findUnique({
-        where: { email }
+        where: { email },
+        include: { branch: true, merchant: true }
       })
     } catch (error: any) {
       log.error('Could not get user by email or phone')
@@ -192,8 +214,62 @@ export class Prisma extends Database {
   }
 
   async updateAdminById(id: string, user: Update<Admin>): Promise<Admin> {
-    console.log(id, user)
-    return {} as Admin;
+    return this.client.admin.update(
+      {
+        where: { id: Number.parseInt(id) },
+        include: { branch: true, merchant: true },
+        data: user
+      },
+    )
+  }
+
+  async getAdminsByBranch(id: number) {
+    return this.client.admin.findMany({
+      where: { branchId: id },
+      include: { merchant: true, branch: true }
+    })
+  }
+
+  /// queues
+  async updateQueueById(id: number, queue: Update<Queue>): Promise<Queue> {
+    return this.client.queue.update({
+      where: { id },
+      include: { branch: true, users: true },
+      data: queue
+    });
+  }
+
+  async insertQueue(queue: Input<Queue>): Promise<Queue> {
+    return this.client.queue.create({ data: queue });
+  }
+
+  async getQueueById(id: number): Promise<Queue> {
+    return this.client.queue.findUnique({
+      where: { id },
+      include: { branch: { include: { merchant: true } }, users: true }
+    });
+  }
+
+  async getQueueByName(name: string): Promise<Queue | null> {
+    const res = this.client.queue.findMany({
+      where: { name },
+      include: { branch: true, users: true }
+    })
+    if (res.length > 1) return res[0];
+    return null;
+  }
+
+  async deleteQueue(id: number): Promise<void> {
+    return this.client.queue.delete({
+      where: { id }
+    });
+  }
+
+  async getBranchQueues(id: number): Promise<Queue[]> {
+    return this.client.queue.findMany({
+      where: { branchId: id },
+      include: { branch: true, users: true }
+    })
   }
 }
 

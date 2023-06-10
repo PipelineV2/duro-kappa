@@ -1,3 +1,10 @@
+export abstract class Repository<T> {
+  abstract get(): T
+  abstract getById(): T
+  abstract insert(): T
+  abstract update(): T
+}
+
 export abstract class Database {
   abstract connect(): Database
 
@@ -28,7 +35,7 @@ export abstract class Database {
 
   abstract insertUser(merchant: Input<User>): Promise<User>
 
-  abstract getUserById(id: string): Promise<User>
+  abstract getUserById(id: number): Promise<User>
 
   abstract getUserByEmailOrPhone(obj: { email?: string, phone?: string }): Promise<User>
 
@@ -43,16 +50,30 @@ export abstract class Database {
   abstract getAdminByEmail(email: string): Promise<Admin>
 
   abstract updateAdminById(id: string, user: Update<Admin>): Promise<Admin>
+
+  // queues.
+  abstract insertQueue(queue: Input<Queue>): Promise<Queue>
+
+  abstract getQueueById(id: number): Promise<Queue>
+
+  abstract getQueueByName(name: string): Promise<Queue | null>
+
+  abstract deleteQueue(id: number): Promise<void>
+
+  abstract getBranchQueues(id: number): Promise<Queue[]>
+
+  abstract updateQueueById(id: number, user: Update<Queue>): Promise<Queue>
 }
 
-export type Input<Type> = Omit<Type, "id" | "merchant" | "branch" | "admin">
+export type Input<Type> = Omit<Type, "id" | "merchant" | "queue" | "branch" | "admin">
 
-export type Update<Type> = Partial<Type>;
+export type Update<Type> = Partial<Input<Type>>;
 
 export type Merchant = {
   id: number
   company_name: string
   branch?: Branch[]
+  admin?: Admin[]
 }
 
 export type Branch = {
@@ -61,10 +82,10 @@ export type Branch = {
   merchant: Merchant
   location: string
   coordinates?: string
-  qr_code?: string
   slug: string
-  admin: Admin
+  admin?: Admin
   current_attended?: number
+  queue?: Queue[]
 }
 
 export type User = {
@@ -75,6 +96,7 @@ export type User = {
   in_queue: boolean
   current_queue?: number | null
   attending_to?: boolean
+  queue?: Queue
 }
 
 export type UserInput = Omit<User, "in_queue">
@@ -89,6 +111,17 @@ export type Admin = {
   branch: Branch
   password: string
   superAdmin: boolean
+}
+
+export type Queue = {
+  id: number
+  name: string
+  description: string
+  branchId: number
+  branch: Branch
+  duration?: string
+  qr_code?: string
+  users?: User[]
 }
 
 export type CleanAdmin = Omit<Admin, "password">

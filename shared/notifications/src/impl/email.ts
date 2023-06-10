@@ -1,16 +1,17 @@
 import { NotificationService, NotificationOptions } from '../'
 import Mailjet from 'node-mailjet';
 import log from "logger";
+import _config from "config";
+const config = _config.notifications;
 
 export class EmailNotificationService implements NotificationService {
   client: Mailjet | null = null;
 
   connect(): this {
-    const { PUBLIC_API_KEY = "", PRIVATE_API_KEY = "" } = process.env
     try {
       this.client = Mailjet.apiConnect(
-        PUBLIC_API_KEY,
-        PRIVATE_API_KEY,
+        config.email.public_key,
+        config.email.private_key,
         {
           config: {},
           options: {}

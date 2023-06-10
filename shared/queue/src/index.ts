@@ -1,7 +1,6 @@
 import { AMQPMessage } from "@cloudamqp/amqp-client";
 import RabbitMQ from "./impl/rabbitmq.queue";
 import Redis from "./impl/redis";
-// import log from "logger";
 
 export abstract class _Queue {
   abstract connect(): Promise<this>
@@ -16,7 +15,7 @@ export abstract class _Queue {
 
   abstract getIndexOf(queue: QueueType, value: string, options: { topic: string }): Promise<number>
 
-  abstract length(queue: QueueType): Promise<number>
+  abstract length(queue: QueueType, options: { read?: number, topic?: string }): Promise<number>
 }
 
 export abstract class Consumer {
@@ -59,16 +58,3 @@ export default (function() {
   }
 })();
 
-//
-//    log.info('doing')
-//    await instance.connect();
-
-//   setTimeout(() => {
-//      log.info('asdf')
-//      instance.enqueue(NOTIFICATION_QUEUE, { topic: 'amdullah', user: 54 })
-//   }, 10000)
-//    log.info('u')
-//    await instance.consume(NOTIFICATION_QUEUE, { topic: 'amdullah' }, (e: any) => {
-//      log.info('notif');
-//      console.log(e)
-//    })

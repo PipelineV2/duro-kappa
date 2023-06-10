@@ -12,12 +12,11 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.24.0",
     "typescript": "^5.0.4",
-    "logger": "workspace:*"
+    "logger": "workspace:*",
+    "config": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^18.16.3",
-    "nodemon": "^2.0.22",
-    "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   }
 }

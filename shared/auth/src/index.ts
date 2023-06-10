@@ -4,16 +4,16 @@ import databaseClient from "database";
 import { User, Admin } from "database/src/models";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import config from "config";
 
 const database = databaseClient();
-const SALT_ROUNDS = 10;
-const TOKEN_SECRET_KEY = "secret";
+const SALT_ROUNDS = config.salt_rounds;
+const TOKEN_SECRET_KEY = config.token_secret;
 
 export const clientAuth = () => {
   return async (req: any & User, res: Response, next: NextFunction) => {
     const { authorization } = req.headers;
     try {
-      console.log(req.headers)
       if (!authorization) throw new Error("close sesame");
 
       const [protocol, token] = authorization.split(" ");
@@ -24,7 +24,7 @@ export const clientAuth = () => {
       const user = await database.getUserByEmailOrPhone({ email });
 
       if (!user)
-        throw new Error("huhuhu...");
+        throw new Error("huhuhu... ");
 
       req.user = user;
       return next();
@@ -33,6 +33,7 @@ export const clientAuth = () => {
     }
   }
 }
+
 export const adminAuth = (isSuperAdmin: boolean) => {
   return async (req: any & Admin, res: Response, next: NextFunction) => {
     const { authorization } = req.headers;
@@ -70,3 +71,9 @@ export const hashPassword = async (password: string): Promise<string> => {
 export const comparePassword = async ({ hashedPassword, password }: { hashedPassword: string, password: string }): Promise<boolean> => {
   return bcrypt.compare(password, hashedPassword);
 }
+
+export const extract = <T extends Record<string, any>>(object: T, key: string): Partial<T> => {
+  delete object[key]
+  return object;
+}
+

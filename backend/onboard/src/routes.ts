@@ -1,7 +1,7 @@
 import log from "logger";
 import { Router } from 'express';
 import databaseClient from "database";
-import { hashPassword } from "auth";
+import { hashPassword, extract } from "auth";
 import { Admin, Branch, Input, Merchant } from 'database/src/models';
 import queueClient, { MERCHANT_REGISTRATION_QUEUE } from "queue"
 import { sendError, sendSuccess } from 'expressapp/src/utils';
@@ -29,11 +29,10 @@ router.post('/merchant', validator.createMerchantValidation, async (_req, res) =
       merchantId: merchant.id,
       location,
       coordinates,
-      qr_code: "",
       slug: `${location.split(" ").join("_").toLowerCase()}__${company_name}`
     })
     const hashedPassword = await hashPassword(password);
-    await database.insertAdmin({
+    admin = await database.insertAdmin({
       merchantId: merchant.id,
       branchId: branch.id,
       username, email, password: hashedPassword, superAdmin: true
@@ -44,7 +43,13 @@ router.post('/merchant', validator.createMerchantValidation, async (_req, res) =
     );
 
     log.info("successfully added business to list. :", merchant.id)
-    return sendSuccess(res, "Successfully registered your business. You will get an email with details about your qr code. Thank you for using our service!")
+    const clean_user = extract(admin, 'password');
+
+    return sendSuccess(
+      res,
+      "Successfully registered your business. You will get an email with details about your qr code. Thank you for using our service!",
+      { data: { user: clean_user, token: '' } }
+    )
   } catch (error: any) {
     log.error(error.message);
     return sendError(res, error.message)

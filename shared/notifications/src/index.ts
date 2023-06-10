@@ -1,8 +1,6 @@
 import log from "logger";
 import { EmailNotificationService } from "./impl/email";
 import { SMSNotificationService } from "./impl/sms";
-import * as dotenv from "dotenv";
-dotenv.config();
 
 const NotificationServices = {
   "email": EmailNotificationService,

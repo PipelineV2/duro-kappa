@@ -103,6 +103,40 @@ importers:
         specifier: ^5.0.4
         version: 5.0.4
 
+  backend/doorman:
+    dependencies:
+      admin:
+        specifier: workspace:*
+        version: link:../admin
+      duro-queue:
+        specifier: workspace:*
+        version: link:../queue
+      express:
+        specifier: ^4.18.2
+        version: 4.18.2
+      expressapp:
+        specifier: workspace:*
+        version: link:../../shared/expressapp
+      jobs:
+        specifier: workspace:*
+        version: link:../jobs
+    devDependencies:
+      '@types/express':
+        specifier: ^4.17.17
+        version: 4.17.17
+      '@types/node':
+        specifier: ^18.16.3
+        version: 18.16.3
+      nodemon:
+        specifier: ^2.0.22
+        version: 2.0.22
+      ts-node:
+        specifier: ^10.9.1
+        version: 10.9.1(@types/node@18.16.3)(typescript@5.1.3)
+      typescript:
+        specifier: ^5.0.4
+        version: 5.1.3
+
   backend/jobs:
     dependencies:
       '@types/qrcode':
@@ -215,6 +249,9 @@ importers:
       expressapp:
         specifier: workspace:*
         version: link:../../shared/expressapp
+      input-validator:
+        specifier: workspace:*
+        version: link:../../shared/input-validator
       logger:
         specifier: workspace:*
         version: link:../../shared/logger
@@ -258,6 +295,9 @@ importers:
       bcrypt:
         specifier: ^5.1.0
         version: 5.1.0
+      config:
+        specifier: workspace:*
+        version: link:../config
       database:
         specifier: workspace:*
         version: link:../database
@@ -274,33 +314,49 @@ importers:
         specifier: ^5.1.3
         version: 5.1.3
 
+  shared/config:
+    dependencies:
+      dotenv:
+        specifier: ^16.0.3
+        version: 16.0.3
+    devDependencies:
+      '@types/express':
+        specifier: ^4.17.17
+        version: 4.17.17
+      typescript:
+        specifier: ^5.0.4
+        version: 5.1.3
+
   shared/database:
     dependencies:
       '@prisma/client':
         specifier: ^4.15.0
         version: 4.15.0(prisma@4.15.0)
+      config:
+        specifier: workspace:*
+        version: link:../config
       dotenv:
         specifier: ^16.0.3
         version: 16.0.3
-    devDependencies:
       logger:
         specifier: workspace:*
         version: link:../logger
       prisma:
         specifier: ^4.15.0
         version: 4.15.0
+    devDependencies:
       typescript:
         specifier: ^5.0.4
         version: 5.0.4
 
   shared/expressapp:
     dependencies:
+      config:
+        specifier: workspace:*
+        version: link:../config
       cors:
         specifier: ^2.8.5
         version: 2.8.5
-      database:
-        specifier: workspace:*
-        version: link:../database
       express:
         specifier: ^4.18.2
         version: 4.18.2
@@ -313,9 +369,6 @@ importers:
       notfoundmiddleware:
         specifier: workspace:*
         version: link:../notfoundmiddleware
-      queue:
-        specifier: workspace:*
-        version: link:../queue
     devDependencies:
       '@types/cors':
         specifier: ^2.8.13
@@ -341,15 +394,9 @@ importers:
 
   shared/input-validator:
     dependencies:
-      cd:
-        specifier: ^0.3.3
-        version: 0.3.3
       express:
         specifier: ^4.18.2
         version: 4.18.2
-      fs-monorepo:
-        specifier: link:../..
-        version: link:../..
       logger:
         specifier: workspace:*
         version: link:../logger
@@ -363,6 +410,9 @@ importers:
 
   shared/logger:
     dependencies:
+      config:
+        specifier: workspace:*
+        version: link:../config
       winston:
         specifier: ^3.8.2
         version: 3.8.2
@@ -392,9 +442,9 @@ importers:
 
   shared/notifications:
     dependencies:
-      dotenv:
-        specifier: ^16.0.3
-        version: 16.0.3
+      config:
+        specifier: workspace:*
+        version: link:../config
       logger:
         specifier: workspace:*
         version: link:../logger
@@ -420,21 +470,18 @@ importers:
       '@cloudamqp/amqp-client':
         specifier: ^2.1.1
         version: 2.1.1
+      config:
+        specifier: workspace:*
+        version: link:../config
       database:
         specifier: workspace:*
         version: link:../database
-      dotenv:
-        specifier: ^16.0.3
-        version: 16.0.3
       ioredis:
         specifier: ^5.3.2
         version: 5.3.2
       logger:
         specifier: workspace:*
         version: link:../logger
-      redis:
-        specifier: ^4.6.7
-        version: 4.6.7
     devDependencies:
       typescript:
         specifier: ^5.0.4
@@ -445,6 +492,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.24.0
         version: 2.24.0
+      config:
+        specifier: workspace:*
+        version: link:../config
       logger:
         specifier: workspace:*
         version: link:../logger
@@ -455,12 +505,6 @@ importers:
       '@types/node':
         specifier: ^18.16.3
         version: 18.16.3
-      nodemon:
-        specifier: ^2.0.22
-        version: 2.0.22
-      ts-node:
-        specifier: ^10.9.1
-        version: 10.9.1(@types/node@18.16.3)(typescript@5.0.4)
 
 packages:
 
@@ -1046,54 +1090,6 @@ packages:
   /@prisma/engines@4.15.0:
     resolution: {integrity: sha512-FTaOCGs0LL0OW68juZlGxFtYviZa4xdQj/rQEdat2txw0s3Vu/saAPKjNVXfIgUsGXmQ72HPgNr6935/P8FNAA==}
     requiresBuild: true
-
-  /@redis/bloom@1.2.0(@redis/client@1.5.8):
-    resolution: {integrity: sha512-HG2DFjYKbpNmVXsa0keLHp/3leGJz1mjh09f2RLGGLQZzSHpkmZWuwJbAvo3QcRY8p80m5+ZdXZdYOSBLlp7Cg==}
-    peerDependencies:
-      '@redis/client': ^1.0.0
-    dependencies:
-      '@redis/client': 1.5.8
-    dev: false
-
-  /@redis/client@1.5.8:
-    resolution: {integrity: sha512-xzElwHIO6rBAqzPeVnCzgvrnBEcFL1P0w8P65VNLRkdVW8rOE58f52hdj0BDgmsdOm4f1EoXPZtH4Fh7M/qUpw==}
-    engines: {node: '>=14'}
-    dependencies:
-      cluster-key-slot: 1.1.2
-      generic-pool: 3.9.0
-      yallist: 4.0.0
-    dev: false
-
-  /@redis/graph@1.1.0(@redis/client@1.5.8):
-    resolution: {integrity: sha512-16yZWngxyXPd+MJxeSr0dqh2AIOi8j9yXKcKCwVaKDbH3HTuETpDVPcLujhFYVPtYrngSco31BUcSa9TH31Gqg==}
-    peerDependencies:
-      '@redis/client': ^1.0.0
-    dependencies:
-      '@redis/client': 1.5.8
-    dev: false
-
-  /@redis/json@1.0.4(@redis/client@1.5.8):
-    resolution: {integrity: sha512-LUZE2Gdrhg0Rx7AN+cZkb1e6HjoSKaeeW8rYnt89Tly13GBI5eP4CwDVr+MY8BAYfCg4/N15OUrtLoona9uSgw==}
-    peerDependencies:
-      '@redis/client': ^1.0.0
-    dependencies:
-      '@redis/client': 1.5.8
-    dev: false
-
-  /@redis/search@1.1.3(@redis/client@1.5.8):
-    resolution: {integrity: sha512-4Dg1JjvCevdiCBTZqjhKkGoC5/BcB7k9j99kdMnaXFXg8x4eyOIVg9487CMv7/BUVkFLZCaIh8ead9mU15DNng==}
-    peerDependencies:
-      '@redis/client': ^1.0.0
-    dependencies:
-      '@redis/client': 1.5.8
-    dev: false
-
-  /@redis/time-series@1.0.4(@redis/client@1.5.8):
-    resolution: {integrity: sha512-ThUIgo2U/g7cCuZavucQTQzA9g9JbDDY2f64u3AbAoz/8vE2lt2U37LamDUVChhaDA3IRT9R6VvJwqnUfTJzng==}
-    peerDependencies:
-      '@redis/client': ^1.0.0
-    dependencies:
-      '@redis/client': 1.5.8
     dev: false
 
   /@redocly/ajv@8.11.0:
@@ -3634,11 +3630,6 @@ packages:
       wide-align: 1.1.5
     dev: false
 
-  /generic-pool@3.9.0:
-    resolution: {integrity: sha512-hymDOu5B53XvN4QT9dBmZxPX4CWhBPPLguTZ9MMFeFa/Kg0xWVfylOVNlJji/E7yTZWFd/q9GO5TxDLq156D7g==}
-    engines: {node: '>= 4'}
-    dev: false
-
   /get-caller-file@2.0.5:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
     engines: {node: 6.* || 8.* || >= 10.*}
@@ -5509,6 +5500,7 @@ packages:
     requiresBuild: true
     dependencies:
       '@prisma/engines': 4.15.0
+    dev: false
 
   /prismjs@1.29.0:
     resolution: {integrity: sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==}
@@ -5675,17 +5667,6 @@ packages:
     engines: {node: '>=4'}
     dependencies:
       redis-errors: 1.2.0
-    dev: false
-
-  /redis@4.6.7:
-    resolution: {integrity: sha512-KrkuNJNpCwRm5vFJh0tteMxW8SaUzkm5fBH7eL5hd/D0fAkzvapxbfGPP/r+4JAXdQuX7nebsBkBqA2RHB7Usw==}
-    dependencies:
-      '@redis/bloom': 1.2.0(@redis/client@1.5.8)
-      '@redis/client': 1.5.8
-      '@redis/graph': 1.1.0(@redis/client@1.5.8)
-      '@redis/json': 1.0.4(@redis/client@1.5.8)
-      '@redis/search': 1.1.3(@redis/client@1.5.8)
-      '@redis/time-series': 1.0.4(@redis/client@1.5.8)
     dev: false
 
   /redoc@2.0.0(core-js@3.30.1)(mobx@6.9.0)(react-dom@17.0.2)(react@17.0.2)(styled-components@5.3.3)(webpack@5.82.0):
@@ -6522,6 +6503,37 @@ packages:
       yn: 3.1.1
     dev: true
 
+  /ts-node@10.9.1(@types/node@18.16.3)(typescript@5.1.3):
+    resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
+    hasBin: true
+    peerDependencies:
+      '@swc/core': '>=1.2.50'
+      '@swc/wasm': '>=1.2.50'
+      '@types/node': '*'
+      typescript: '>=2.7'
+    peerDependenciesMeta:
+      '@swc/core':
+        optional: true
+      '@swc/wasm':
+        optional: true
+    dependencies:
+      '@cspotcode/source-map-support': 0.8.1
+      '@tsconfig/node10': 1.0.9
+      '@tsconfig/node12': 1.0.11
+      '@tsconfig/node14': 1.0.3
+      '@tsconfig/node16': 1.0.3
+      '@types/node': 18.16.3
+      acorn: 8.8.2
+      acorn-walk: 8.2.0
+      arg: 4.1.3
+      create-require: 1.1.1
+      diff: 4.0.2
+      make-error: 1.3.6
+      typescript: 5.1.3
+      v8-compile-cache-lib: 3.0.1
+      yn: 3.1.1
+    dev: true
+
   /tsconfig-paths@3.14.2:
     resolution: {integrity: sha512-o/9iXgCYc5L/JxCHPe3Hvh8Q/2xm5Z+p18PESBU6Ff33695QnCHBEjcytY2q19ua7Mbl/DavtBOLq+oG0RCL+g==}
     dependencies:
@@ -6606,7 +6618,6 @@ packages:
     resolution: {integrity: sha512-XH627E9vkeqhlZFQuL+UsyAXEnibT0kWR2FWONlr4sTjvxyJYnyefgrkyECLzM5NenmKzRAy2rR/OlYLA1HkZw==}
     engines: {node: '>=14.17'}
     hasBin: true
-    dev: false
 
   /uglify-js@3.17.4:
     resolution: {integrity: sha512-T9q82TJI9e/C1TAxYvfb16xO120tMVFZrGA3f9/P4424DNu6ypK103y0GPFVa17yotwSyZW5iYXgjYHkGrJW/g==}

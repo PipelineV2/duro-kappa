@@ -1,5 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import log from "logger";
+import _config from "config";
+const config = _config.storage;
 
 // Create a single supabase client for interacting with your database
 export interface Storage {
@@ -12,7 +14,6 @@ export interface Storage {
   upload<T>(file: string, object: T): Promise<string>
 }
 
-const MERCHANTS_QR_BUCKET = 'merchant-qr-codes';
 
 
 class Supabase implements Storage {
@@ -20,7 +21,7 @@ class Supabase implements Storage {
 
   connect(): this {
     try {
-      this.client = createClient('https://oelljigkkingcydffvan.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lbGxqaWdra2luZ2N5ZGZmdmFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODU0NDk2MDEsImV4cCI6MjAwMTAyNTYwMX0.L3AQ0A9dYjXwe2_rkubMZR1NseGmybksT4f0e_XjdkA')
+      this.client = createClient(config.connection_url, config.private_key);
       return this;
     } catch (error: any) {
       log.error('could not connect to client')
@@ -36,21 +37,22 @@ class Supabase implements Storage {
   // has been uploaded already
   async upload<T>(file: string, object: T): Promise<string> {
     log.info(file, object);
+
     try {
       const { error } = await this.client
         .storage
-        .from(MERCHANTS_QR_BUCKET)
+        .from(config.qr_bucket)
         .upload(`public/${file}`, object, {
           contentType: 'image/png',
-          upsert: true,
+          upsert: false,
           cacheControl: 3600
         });
       if (error) throw new Error(error.message)
       log.info("successfully uploaded file ", file);
 
-      const { data: url } = this.client
+      const { data: { publicUrl: url } } = this.client
         .storage
-        .from(MERCHANTS_QR_BUCKET)
+        .from(config.qr_bucket)
         .getPublicUrl(`public/${file}`)
       return url;
     } catch (error: any) {
