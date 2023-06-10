@@ -8,7 +8,7 @@ import config from "config";
 
 const database = databaseClient();
 const SALT_ROUNDS = config.salt_rounds;
-const TOKEN_SECRET_KEY = config.token_secret;
+const TOKEN_SECRET_KEY = config.token_secret || "secret";
 
 export const clientAuth = () => {
   return async (req: any & User, res: Response, next: NextFunction) => {
@@ -61,7 +61,7 @@ export const adminAuth = (isSuperAdmin: boolean) => {
 }
 
 export const signJWT = <T extends string | Record<string, string>>(value: T) => {
-  return jwt.sign(value, 'secret');
+  return jwt.sign(value, TOKEN_SECRET_KEY);
 }
 
 export const hashPassword = async (password: string): Promise<string> => {
