@@ -2,7 +2,9 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 import Header from '@/components/header'
 import Providers from '@/providers'
-//import 'react-toastify/dist/ReactToastify.css';
+import { Toaster } from 'react-hot-toast';
+import 'react-toastify/dist/ReactToastify.css';
+import 'reactjs-popup/dist/index.css';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
@@ -17,14 +19,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <div className='mx-10'>
-          <Header title="DURO" />
+      <body className={`${inter.className}`}>
+        <div className='max-w-screen-xl mx-auto p-8'>
           <Providers>
+            <Header title="DURO" />
             <div className='w-full flex'>
               {children}
             </div>
           </Providers>
+          <Toaster />
         </div>
       </body>
     </html>

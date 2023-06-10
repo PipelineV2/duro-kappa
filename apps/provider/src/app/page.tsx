@@ -29,14 +29,6 @@ export default function Home() {
         queue up!. with your email or phone!
         a notification will be sent to you when it's almost your turn, and when its your turn.
       </div>
-
-      <Form submit={queue}>
-        <div>
-          <Form.Input placeholder="email" name="email" type="email" />
-          <Form.Input placeholder="phone" name="phone" type="tel" />
-          <Form.Submit text="submit form!" />
-        </div>
-      </Form>
     </div>
   )
 }

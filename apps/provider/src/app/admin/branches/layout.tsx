@@ -1,22 +1,24 @@
 'use client'
-import Link from 'next/link';
+import Layout from '@/components/layouts/dashboard';
 import Branches from './branches'
+import Link from 'next/link';
+import { Button } from '@/components/button';
 
 function Page({ children }: {
   children: React.ReactNode
 }) {
   return (
-    <div className="w-full h-max mt-[2rem]">
-      <div className="mx-auto">
-        <div className="grid grid-cols-2">
-          <Branches />
-          
-          <div>
-            {children}
-          </div>
-        </div>
-      </div>
-    </div>
+    <Layout
+      jumbotronText='here are your branches...'
+      jumbotronCta={(
+        <Link href={`/admin/branches/create`}>
+          <Button> create branch </Button>
+        </Link>
+      )}
+      Left={<Branches />}
+    >
+      {children}
+    </Layout>
   );
 }
 

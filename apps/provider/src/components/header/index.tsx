@@ -1,22 +1,45 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect } from 'react';
 import Link from 'next/link';
+import { useAuthContext } from '@/contexts/auth.context';
+import { is_admin, is_super_admin } from '@/utils/utils';
+import { useRouter } from 'next/navigation';
 
 type PropsType = {
   title: string
 }
 
 function Header({ title = "DURO" }: PropsType) {
+  const { user, logout } = useAuthContext();
+  const router = useRouter();
+
+  const _logout = async () => {
+    logout();
+    router.refresh();
+    //router.push('/')
+  }
+
   return (
-    <div className='w-full py-3 flex items-center justify-between'>
-      <div className="text-center space-x-2">
+    <div className='_py-4 _px-5 _bg-gray-600 _text-white w-full flex items-center space-y-8 flex flex-col lg:flex-row justify-between'>
+      <div className="_self-start text-4xl space-x-2">
         <span>{title}</span>
-        <span>by team kappa</span>
+        <span className='text-sm'>by team kappa</span>
       </div>
-      <div className='flex items-center'>
-        <Link href="/admin/dashboard" className='mx-1'> Dashboard </Link>
-        <Link href="/admin/branches" className='mx-1'> Branches </Link>
-        <Link href="/admin/settings" className='mx-1'> Settings </Link>
+      <div className='flex items-center text-xl space-x-3'>
+        {user && is_admin(user)
+          ? (
+            <>
+              <Link href="/admin/dashboard" className='mx-1'> queues </Link>
+              {is_super_admin(user)
+                ? <Link href="/admin/branches" className='mx-1'> branches </Link>
+                : ""}
+            </>
+          )
+          : null}
+        {user && <div onClick={_logout}> logout </div>}
       </div>
+
     </div>
   )
 }

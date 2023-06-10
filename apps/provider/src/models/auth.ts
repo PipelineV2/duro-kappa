@@ -11,4 +11,7 @@ export type QueueUserInputType = {
   phone: string
 }
 
-export interface User { }
+export interface User {
+  name: string
+  email: string
+}

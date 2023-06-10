@@ -1,22 +1,27 @@
 'use client'
-import Link from 'next/link';
 import Queues from './queues'
+import Link from 'next/link';
+import { Button } from '@/components/button';
+import Layout from '@/components/layouts/dashboard';
+import { ModalTrigger } from '@/components/modal';
 
 function Page({ children }: {
   children: React.ReactNode
 }) {
   return (
-    <div className="w-full h-max mt-[2rem]">
-      <div className="mx-auto">
-        <div className="grid grid-cols-2">
-          <Queues />
-          
-          <div>
-            {children}
-          </div>
-        </div>
-      </div>
-    </div>
+    <Layout
+      jumbotronText='here are your queues...'
+      jumbotronCta={(
+        <ModalTrigger id="create-queue">
+          <Link href={`/admin/dashboard/queue/create`}>
+            <Button> create new queue </Button>
+          </Link>
+        </ModalTrigger>
+      )}
+      Left={<Queues />}
+    >
+      {children}
+    </Layout>
   );
 }
 
