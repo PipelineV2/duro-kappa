@@ -43,6 +43,8 @@ export async function request(url: string, { method, body, withCredentials }: Re
   }
 }
 
+const localStorage = window.localStorage ?? {};
+
 export class Storage {
   set(key: string, value: any) {
     localStorage.setItem(key, JSON.stringify(value))
