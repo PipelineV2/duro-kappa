@@ -2,6 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 const config = {
+  app_url: process.env.APP_URL,
   salt_rounds: 10,
   token_secret: "asfdnnijnijncak",
   environment: process.env.NODE_ENV ?? "development",

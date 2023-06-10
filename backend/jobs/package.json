@@ -22,6 +22,7 @@
     "notifications": "workspace:*",
     "qrcode": "^1.5.3",
     "queue": "workspace:*",
+    "config": "workspace:*",
     "storage": "workspace:*",
     "zod": "^3.21.4"
   },
