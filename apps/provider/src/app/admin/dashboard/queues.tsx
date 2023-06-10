@@ -21,7 +21,7 @@ export default function Page() {
         ? (
           <div className='mt-2'>
             {meta?.map((queue: any) => (
-              <div className='mb-8 p-4 border border border-black shadow-outset '>
+              <div key={queue.id} className='mb-8 p-4 border border border-black shadow-outset '>
                 <Link className='' key={queue.id} href={`/admin/dashboard/queue/${queue.id}`}>
                   <div>
                     <div className='text-xl'>{queue.name}</div>
