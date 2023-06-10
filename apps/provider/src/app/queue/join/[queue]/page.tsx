@@ -23,7 +23,7 @@ export default function Page({ params: { queue } }: { params: { queue: string } 
       apis.preview_queue(queue)
         .then(e => { console.log(e); setData(e.data); toast(e.message) })
         .catch(e => { console.log(e); toast.error(e.message) })
-  }, [data])
+  }, [data, queue])
 
   const Form = createForm({
     initialValues: { email: "", username: "" },

@@ -52,7 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           break;
       }
     }
-  }, [pathname]);
+  }, [pathname, auth_pages, router, user.token, user.user]);
 
   const onboard = async (values: OnboardMerchant): Promise<UIResponse> => {
     try {

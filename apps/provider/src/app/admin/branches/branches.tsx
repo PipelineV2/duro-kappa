@@ -13,7 +13,7 @@ export default function Page() {
     if (!branches)
       get_branches()
         .catch((e: any) => { toast.error(e.message) });
-  }, [branches])
+  }, [branches, get_branches])
 
   return (
     <div className="hidden lg:block">
@@ -23,10 +23,10 @@ export default function Page() {
             {branches.map((branch: any) => (
               <div key={branch.id} className='mb-8 p-4 border border border-black shadow-outset '>
                 <div className='' key={branch.id}>
-                    <div className='text-xl'>Branch location: {branch.location}</div>
-                    <span className='text-sm'>Branch Location: {branch.location}</span>
-                    <div className='mt-2 text-bold'> admin: </div>
-                    <div> {branch?.admin?.username ? `${branch.admin.username}  -  ` : ''}{branch?.admin?.email} </div>
+                  <div className='text-xl'>Branch location: {branch.location}</div>
+                  <span className='text-sm'>Branch Location: {branch.location}</span>
+                  <div className='mt-2 text-bold'> admin: </div>
+                  <div> {branch?.admin?.username ? `${branch.admin.username}  -  ` : ''}{branch?.admin?.email} </div>
                 </div>
               </div>
             ))}

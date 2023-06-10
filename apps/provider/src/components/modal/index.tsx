@@ -37,7 +37,7 @@ export default function Modal({ onClose, defaultOpen, children, id, as, componen
   useEffect(() => {
     if (defaultOpen)
       toggle(id, true);
-  }, [defaultOpen])
+  }, [defaultOpen, id, toggle])
 
   return (
     <Popup

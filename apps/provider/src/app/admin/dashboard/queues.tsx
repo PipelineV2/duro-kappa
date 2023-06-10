@@ -13,7 +13,7 @@ export default function Page() {
       list_admin_queues()
     //.then(({ message }) => toast(message))
     //.catch(({ message }) => toast(message))
-  }, [meta])
+  }, [meta, list_admin_queues])
 
   return (
     <div className="hidden lg:block">

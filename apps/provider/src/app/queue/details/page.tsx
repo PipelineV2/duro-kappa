@@ -11,7 +11,7 @@ export default async function Page() {
   useEffect(() => {
     if (!meta)
       get_user_queue_details();
-  }, [meta])
+  }, [meta, get_user_queue_details])
 
   const _leave_queue = async () => {
     try {
