@@ -42,27 +42,27 @@ export default function Page({ params: { queue } }: { params: { queue: string } 
   }
 
   return (
-    <div>
+    <div className='w-full flex mt-16'>
       {data
-        ? <div>
-          <h1>{data.branch.merchant.company_name}</h1>
-          you are about to join this guy's queue: {data.branch.location}.
+        ? (
+          <div className='mx-auto'>
+            you are about to join: {data.branch.merchant.company_name}'s
+            <h2 className="text-4xl">
+              {data.name}
+            </h2>
+            <h3 className='text-gray-400'>
+              {data.description}
+            </h3>
 
-          <h2 className="mt-3">
-            {data.name}
-          </h2>
-          <h3>
-            {data.description}
-          </h3>
-          <Form submit={submitForm}>
-            <div className="space-y-[18px]">
-              <Form.Input placeholder="Email" type="email" name="email" />
-              <Form.Input placeholder="Enter a username" name="username" />
-              <Form.Submit text="submit form!" />
-            </div>
-          </Form>
-        </div>
-        : <div>hmmmm...</div>}
+            <Form submit={submitForm}>
+              <div className="mt-[2rem] space-y-[18px]">
+                <Form.Input label='Email' required placeholder="Email" type="email" name="email" />
+                <Form.Input label='Username' placeholder="Enter a username (optional)" name="username" />
+                <Form.Submit text="submit form!" />
+              </div>
+            </Form>
+          </div>
+        ) : <div>hmmmm...</div>}
     </div>
   )
 }

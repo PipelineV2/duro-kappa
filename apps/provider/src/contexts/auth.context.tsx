@@ -1,5 +1,4 @@
 'use client';
-
 import { createContext, useState, useContext, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { apis, JoinQueueInput, LoginMerchant, OnboardMerchant } from '@/api';
@@ -7,7 +6,6 @@ import { Storage, is_client, DURO_USER, TOKEN } from "@/utils/utils"
 import { User } from '@/models/auth'
 
 
-const storage = new Storage();
 export type UIResponse = { message: string }
 export type AuthContextType = {
   user: User;
@@ -19,6 +17,7 @@ export type AuthContextType = {
 
 type AuthStateType = Record<"user" | "token", any>;
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const storage = new Storage();
   const router = useRouter();
   const pathname = usePathname();
   const [user, setUser] = useState<AuthStateType>(() => ({
@@ -68,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const update_user = (data: AuthStateType) => {
     if (data.token === null || data.user === null) {
       storage.clear();
-      setUser({ ...data })
+      setUser({ token: null, user: null })
     } else {
       storage.set(TOKEN, data.token);
       storage.set(DURO_USER, data.user);
@@ -125,6 +124,7 @@ export const AuthContext = createContext({} as AuthContextType);
 export const useAuthContext = () => useContext(AuthContext);
 
 export const is_user_logged_in = async () => {
+  const storage = new Storage();
   return storage.get(TOKEN) && storage.get(DURO_USER);
 }
 

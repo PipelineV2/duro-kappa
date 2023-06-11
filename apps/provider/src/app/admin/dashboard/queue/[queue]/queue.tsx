@@ -1,15 +1,27 @@
 'use client'
 import Link from 'next/link';
 import { useQueueContext } from '@/contexts/queue.context';
+import { apis } from '@/api';
+import toast from 'react-hot-toast';
 
 export default function Queue({ queue: _queue }: { queue: string }) {
-  const { meta } = useQueueContext();
+  const { meta, list_admin_queues } = useQueueContext();
   const queue = meta?.find((e: any) => e.id == _queue)
   const currently_attending = queue?.users
     ?.filter((e: any) => e.attending_to) ?? []
   const remainder_on_queue = queue?.users
     ?.filter((e: any) => !e.attending_to) ?? []
   console.log(queue)
+
+  const dismiss_user = async (id: string) => {
+    try {
+      await apis.dismiss_user(id)
+      await list_admin_queues();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  }
+
   return (
     <div className="">
       {meta
@@ -38,7 +50,7 @@ export default function Queue({ queue: _queue }: { queue: string }) {
             </div>
 
             <div className='mt-14'>
-              <div className='text-lg underline'> you're currently attending to: ({currently_attending.length}) </div>
+              <div className='text-lg underline-offset-4 underline'> you're currently attending to: ({currently_attending.length}) </div>
               <div className='mt-1'>
                 {currently_attending
                   .map((user: any) => (
@@ -49,7 +61,7 @@ export default function Queue({ queue: _queue }: { queue: string }) {
 
                       <div className='group flex items-center absolute right-0'>
                         <div className='group-hover:block mr-2 hidden border relative flex flex-col top-[2rem] bg-white'>
-                          <div className='cursor-pointer py-2 px-3 hover:bg-black hover:text-white'>
+                          <div onClick={() => dismiss_user(user.id)} className='cursor-pointer py-2 px-3 hover:bg-black hover:text-white'>
                             dismiss user.
                           </div>
                           <div className='cursor-pointer py-2 px-3 hover:bg-black hover:text-white'>
@@ -66,7 +78,7 @@ export default function Queue({ queue: _queue }: { queue: string }) {
             </div>
 
             <div className='mt-8'>
-              <div className='text-lg underline'> remaining queue occupants ({remainder_on_queue.length}) </div>
+              <div className='text-lg underline-offset-4 underline'> remaining queue occupants ({remainder_on_queue.length}) </div>
               <span></span>
               <div className='mt-1'>
                 {remainder_on_queue

@@ -32,12 +32,12 @@ function Page() {
   }
 
   return (
-    <div className="w-[10rem] h-max mx-auto mt-[2rem]">
+    <div className="w-[20rem] h-max mx-auto mt-[2rem] md:mt-[5rem]">
       <Form submit={submitForm}>
-        <div className="space-y-[18px]">
-          <Form.Input placeholder="Email" type="email" name="email" />
-          <Form.Input placeholder="Enter a password" type='password' name="password" />
-          <Form.Submit text="submit form!" />
+        <div className="flex flex-col space-y-[18px]">
+          <Form.Input required aria-label='Email' label="Email" placeholder="Email" type="email" name="email" />
+          <Form.Input required label="Password" aria-label='Password' placeholder="Enter a password" type='password' name="password" />
+          <Form.Submit text="submit form!" className="ml-auto" />
         </div>
       </Form>
     </div>

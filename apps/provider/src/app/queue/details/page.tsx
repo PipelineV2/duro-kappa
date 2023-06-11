@@ -3,9 +3,15 @@ import React, { useEffect } from "react";
 import { useQueueContext } from "@/contexts/queue.context";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import Jumbotron from "@/components/jumbotron";
+import { ModalTrigger } from "@/components/modal";
+import { Button } from "@/components/button";
+import Link from "next/link";
+import { useAuthContext } from "@/contexts/auth.context";
 
 export default async function Page() {
   const { meta, get_user_queue_details, leave_queue } = useQueueContext();
+  const { user } = useAuthContext();
   const router = useRouter();
 
   useEffect(() => {
@@ -24,24 +30,31 @@ export default async function Page() {
   }
 
   return (
-    <div>
-      {meta
+    <div className="w-screen flex flex-col mt-[5rem]">
+      {meta && !user?.attending_to
         ? (
-          <div>
-            <div>you are number {meta.position} on the list! </div>
+          <div className="_mx-auto">
+            <Jumbotron
+              cta={(
+                <div>
+                  <ModalTrigger id="create-queue">
+                    <Link href={`/admin/dashboard/queue/create`}>
+                      <Button> leave queue </Button>
+                    </Link>
+                  </ModalTrigger>
+                </div>
+              )}
+              text={`you are number ${meta.position} on the list!`}
+            />
 
-            <div className="mt-5 underline"> user list </div>
+            <div className="mt-8 underline"> here's the queue list </div>
             {meta.queue.users.map((user: any) => (
-              <div key={user.id}>{user.name ?? user.email}</div>
+              <div className="my-1 hover:border-r " key={user.id}> - {user.name ?? user.email}</div>
             ))}
-            <button onClick={_leave_queue} className="mt-5" role="button">
-              leave queue
-            </button>
           </div>
-        ) : (
-          <div>
-          </div>)}
-      this is my details page.
+        ) : user?.attending_to ? (
+          <div> you are currently being attended to :).
+          </div>) : null}
     </div>
   )
 }

@@ -75,8 +75,8 @@ async function advance_queue(opts: { queueId: string, userId?: string }) {
   return request('/admin/queue/advance', { method: 'post', body: opts, withCredentials: true })
 }
 
-async function dismiss_user() {
-  return request('/admin/queue/user/dismiss', { method: 'post', withCredentials: true })
+async function dismiss_user(user: string) {
+  return request('/admin/queue/user/dismiss', { method: 'post', withCredentials: true, body: { userId: user } })
 }
 
 //async function delete_branch() {

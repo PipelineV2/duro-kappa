@@ -2,7 +2,7 @@
 import { useAuthContext } from "@/contexts/auth.context"
 import { HTMLAttributes } from "react";
 
-export default function Jumbotron({ text, cta, ...attrs }: { text: string, cta?: React.ReactNode } & HTMLAttributes<HTMLDivElement>) {
+export default function Jumbotron({ text, cta, ...attrs }: { text?: string, cta?: React.ReactNode } & HTMLAttributes<HTMLDivElement>) {
   const { user } = useAuthContext();
 
   return (
@@ -11,7 +11,7 @@ export default function Jumbotron({ text, cta, ...attrs }: { text: string, cta?:
         <div> hello, <span className='ml-1 text-3xl'>{user.name ?? user.email}</span>  </div>
         <div>{text}</div>
       </div>
-      <div className="ml-auto">
+      <div className="_ml-auto">
         {cta ?? ""}
       </div>
     </div>)

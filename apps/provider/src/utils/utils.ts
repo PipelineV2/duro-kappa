@@ -8,7 +8,7 @@ type RequestOptions = {
 export const DURO_ADMIN = 'duro_admin'
 export const DURO_USER = 'duro_user'
 export const TOKEN = 'duro_token'
-export const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:7778';
+export const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
 export async function request(url: string, { method, body, withCredentials }: RequestOptions) {
   const storage = new Storage();
@@ -43,20 +43,23 @@ export async function request(url: string, { method, body, withCredentials }: Re
   }
 }
 
-const localStorage = window.localStorage ?? {};
-
 export class Storage {
+  localStorage: any
+  constructor() {
+    this.localStorage = typeof window !== "undefined" ? window : null;
+  }
+
   set(key: string, value: any) {
-    localStorage.setItem(key, JSON.stringify(value))
+    this.localStorage?.setItem(key, JSON.stringify(value))
   }
 
   get(key: string) {
-    const value = localStorage.getItem(key)
+    const value = this.localStorage?.getItem(key)
     return value ? JSON.parse(value) : null;
   }
 
   clear() {
-    localStorage.clear();
+    this.localStorage?.clear();
   }
 
   getMultiple(keys: Array<string>) {

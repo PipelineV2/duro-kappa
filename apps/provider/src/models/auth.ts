@@ -14,4 +14,5 @@ export type QueueUserInputType = {
 export interface User {
   name: string
   email: string
+  attending_to: boolean
 }

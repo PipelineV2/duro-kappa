@@ -1,13 +1,8 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import { Button } from "@/components/button"
+import { Button, ButtonProps } from "@/components/button"
 
-type SubmitButtonProps = {
-  text?: string
-  children?: React.ReactNode
-}
-
-const SubmitButton = ({ children, ...props }: SubmitButtonProps) => {
+const SubmitButton = ({ children, ...props }: ButtonProps) => {
   const { submitForm, isSubmitting } = useFormikContext();
 
   return (

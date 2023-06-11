@@ -4,8 +4,8 @@ import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import createForm from "@/components/form";
 import { AuthContextType, useAuthContext } from '@/contexts/auth.context';
-import { OnboardingInputType } from '@/models/auth';
 import { OnboardMerchant } from '@/api';
+import { useRouter } from 'next/navigation';
 
 const validationSchema = Yup.object({
   company_name: Yup.string().required(),
@@ -17,6 +17,7 @@ const validationSchema = Yup.object({
 
 function Page() {
   const { onboard }: AuthContextType = useAuthContext();
+  const router = useRouter();
   const Form = createForm<OnboardMerchant, typeof validationSchema>({
     initialValues: {
       company_name: "",
@@ -34,21 +35,22 @@ function Page() {
       //toast.success("you have been successfully onboarded.")
       const { message } = await onboard(values);
       toast.success(message);
+      router.push('/admin/dashboard')
     } catch (error) {
       toast.error("you encountered an error while onboarding... please try again or contact support.")
     }
   }
 
   return (
-    <div className="w-[10rem] h-max mx-auto mt-[2rem]">
+    <div className="w-[20rem] h-max mx-auto mt-[2rem] md:mt-[5rem]">
       <Form submit={submitForm}>
-        <div className="space-y-[18px]">
-          <Form.Input placeholder="Company Name" name="company_name" />
-          <Form.Input placeholder="Location" name="location" />
-          <Form.Input placeholder="Username" name="username" />
-          <Form.Input placeholder="Email" type="email" name="email" />
-          <Form.Input placeholder="Enter a password" type='password' name="password" />
-          <Form.Submit text="submit form!" />
+        <div className="flex flex-col space-y-[18px]">
+          <Form.Input required label='company name' placeholder="vault industries." name="company_name" />
+          <Form.Input required label="location" placeholder="undisclosed" name="location" />
+          <Form.Input required label='username' placeholder="homelander" name="username" />
+          <Form.Input required label='email' placeholder="homee.hates.every1@aol.com" type="email" name="email" />
+          <Form.Input required label='password' placeholder="****" type='password' name="password" />
+          <Form.Submit text="submit form!" className='ml-auto' />
         </div>
       </Form>
     </div>

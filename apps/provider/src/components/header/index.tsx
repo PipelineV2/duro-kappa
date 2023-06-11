@@ -21,7 +21,7 @@ function Header({ title = "DURO" }: PropsType) {
   }
 
   return (
-    <div className='_py-4 _px-5 _bg-gray-600 _text-white w-full flex items-center space-y-8 flex flex-col lg:flex-row justify-between'>
+    <div className='_py-4 _px-5 _bg-gray-600 _text-white text-gray-800 w-full flex items-center space-y-8 flex flex-col lg:flex-row justify-between'>
       <div className="_self-start text-4xl space-x-2">
         <span>{title}</span>
         <span className='text-sm'>by team kappa</span>
@@ -37,7 +37,14 @@ function Header({ title = "DURO" }: PropsType) {
             </>
           )
           : null}
-        {user && <div onClick={_logout}> logout </div>}
+        {user
+          ? <div onClick={_logout}> logout </div>
+          : (
+            <div className='flex'>
+              <div className='mx-1'> <Link href={'/admin/login'}> login </Link> </div>
+              <div className='mx-1'> <Link href={'/admin/onboard'}> signup </Link> </div>
+            </div>
+          )}
       </div>
 
     </div>
