@@ -71,7 +71,7 @@ async function get_branches() {
   return request('/admin/branch/list', { method: 'get', withCredentials: true })
 }
 
-async function advance_queue(opts: { queueId: string, userId?: string }) {
+async function advance_queue(opts: { queueId?: number, userId?: number }) {
   return request('/admin/queue/advance', { method: 'post', body: opts, withCredentials: true })
 }
 

@@ -13,7 +13,7 @@ export default function Page() {
   const pathname = usePathname();
   const { is_mobile, screen_size } = useScreenContext();
   const pn = useMemo(() => pathname.split('/'), [pathname])
-  const classname = useMemo(() => pn.length > 2 && is_mobile() ? "hidden" : "block", [pn, screen_size, is_mobile()])
+  const classname = useMemo(() => pn.length > 3 && is_mobile() ? "hidden" : "block", [pn, screen_size, is_mobile()])
 
   useEffect(() => {
     if (!meta)

@@ -16,7 +16,7 @@ function Page({ children }: {
       jumbotronText='here are your queues...'
       jumbotronCta={(
         <div className='flex justify-between items-end w-full'>
-          <Link href="/admin/branches" className={is_mobile() ? "block" : "hidden"}>go back</Link>
+          <Link href="/admin/dashboard" className={is_mobile() ? "block" : "hidden"}>go back</Link>
           <ModalTrigger id="create-queue">
             <Link href={`/admin/dashboard/queue/create`}>
               <Button> create new queue </Button>

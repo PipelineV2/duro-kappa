@@ -46,7 +46,7 @@ export async function request(url: string, { method, body, withCredentials }: Re
 export class Storage {
   localStorage: any
   constructor() {
-    this.localStorage = typeof window !== "undefined" ? window : null;
+    this.localStorage = typeof window !== "undefined" ? window.localStorage : null;
   }
 
   set(key: string, value: any) {

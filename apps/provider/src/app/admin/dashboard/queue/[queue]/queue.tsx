@@ -11,7 +11,6 @@ export default function Queue({ queue: _queue }: { queue: string }) {
     ?.filter((e: any) => e.attending_to) ?? []
   const remainder_on_queue = queue?.users
     ?.filter((e: any) => !e.attending_to) ?? []
-  console.log(queue)
 
   const dismiss_user = async (id: string) => {
     try {
@@ -22,6 +21,18 @@ export default function Queue({ queue: _queue }: { queue: string }) {
     }
   }
 
+  const _advance_queue = async (user: string) => {
+    try {
+      const { message } = await apis.advance_queue({
+        userId: Number.parseInt(user),
+        queueId: Number.parseInt(_queue)
+      });
+      await list_admin_queues();
+      toast.success(message);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  }
   return (
     <div className="">
       {meta
@@ -64,7 +75,7 @@ export default function Queue({ queue: _queue }: { queue: string }) {
                           <div onClick={() => dismiss_user(user.id)} className='cursor-pointer py-2 px-3 hover:bg-black hover:text-white'>
                             dismiss user.
                           </div>
-                          <div className='cursor-pointer py-2 px-3 hover:bg-black hover:text-white'>
+                          <div onClick={() => _advance_queue(user.id)} className='cursor-pointer py-2 px-3 hover:bg-black hover:text-white'>
                             dismiss user & advance queue.
                           </div>
                         </div>
