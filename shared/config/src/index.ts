@@ -18,7 +18,7 @@ const config = {
     qr_bucket: "merchant-qr-codes"
   },
   queue: {
-    connection_url: process.env.QUEUE_CONNECTION_URL,
+    connection_url: process.env.QUEUE_CONNECTION_URL ?? "",
   },
   notifications: {
     email: {

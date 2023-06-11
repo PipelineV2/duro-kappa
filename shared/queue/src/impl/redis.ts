@@ -1,10 +1,10 @@
 import { Queue, QueueType } from '../index'
 import log from "logger";
-import RedisClient from 'ioredis';
+import { Redis as RedisClient } from 'ioredis';
 import databaseClient from "database";
 import { Database } from "database/src/models";
 import _config from "config";
-const config = _config.database;
+const config = _config.queue;
 
 export default class Redis implements Queue {
   client: RedisClient | null = null;
