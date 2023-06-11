@@ -1,2 +1,2 @@
-pnpm i
+pnpm install
 pnpm run build
