@@ -16,7 +16,6 @@
     "express": "^4.18.2",
     "expressapp": "workspace:*",
     "duro-queue": "workspace:*",
-    "jobs": "workspace:*",
     "admin": "workspace:*"
   },
   "devDependencies": {
