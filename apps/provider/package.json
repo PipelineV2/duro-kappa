@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start:fe": "next start",
     "lint": "next lint",
     "test:ci": "npm run test:components && npm run test:e2e",
     "test:components": "cypress run --component",
