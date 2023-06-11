@@ -16,8 +16,8 @@ run npx prisma generate
 
 run pnpm i ts-node -w
 
-env DATABASE_URL postgres://postgres:root@localhost:5432
-
+ARG DATABASE_URL
+ENV DATABASE_URL $DATABASE_URL
 env QUEUE_CONNECTION_URL redis://red-ci29ksm7avj2t336jnf0:6379 
 
 env PORT 4000

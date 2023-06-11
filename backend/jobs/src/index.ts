@@ -1,4 +1,4 @@
-//import express from "expressapp";
+import express from "expressapp";
 import { Router } from 'express';
 import merchant_registration from "./merchant-registration"
 import sms from './sms'
@@ -14,4 +14,4 @@ router.use(
 );
 
 
-export default router;
+export default express(router);
