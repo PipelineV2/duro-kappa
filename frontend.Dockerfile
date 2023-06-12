@@ -13,6 +13,8 @@ run pnpm run build
 
 env NEXT_PUBLIC_API_URL https://new-duro-be.onrender.com
 
-cmd ["cd", "/app/apps/provider", "&&", "npm", "run", "dev"]
+workdir /app/apps/provider
+
+cmd ["pnpm", "run", "start"]
 
 
