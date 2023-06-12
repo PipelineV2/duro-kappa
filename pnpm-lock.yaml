@@ -80,9 +80,6 @@ importers:
       expressapp:
         specifier: workspace:*
         version: link:../../shared/expressapp
-      jobs:
-        specifier: workspace:*
-        version: link:../jobs
     devDependencies:
       '@types/express':
         specifier: ^4.17.17
