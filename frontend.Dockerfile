@@ -9,9 +9,11 @@ workdir /app
 
 run pnpm i
 
-run pnpm run build
+arg NEXT_PUBLIC_API_URL 
 
-env NEXT_PUBLIC_API_URL https://new-duro-be.onrender.com
+env NEXT_PUBLIC_API_URL $NEXT_PUBLIC_API_URL
+
+run pnpm run build
 
 workdir /app/apps/provider
 
