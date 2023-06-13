@@ -18,6 +18,7 @@ run pnpm i
 run pnpm run build
 
 workdir /app/apps/backend/doorman
+
 cmd ["ls"]
 
 
