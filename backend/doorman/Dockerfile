@@ -6,7 +6,6 @@ RUN apk update && apk add --no-cache libc6-compat
 RUN corepack enable && corepack prepare pnpm@7.4.1 --activate 
 
 COPY ../../package.json /app/package.json
-#COPY ../../package-lock.json /app/package-lock.json
 
 copy ../../* /app
 
