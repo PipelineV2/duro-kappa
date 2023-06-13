@@ -1,7 +1,8 @@
-import express, { Router }  from "express";
+import express, { Router } from "express";
 import cors from 'cors';
 import notFoundMiddleware from 'notfoundmiddleware';
 import log from "logger";
+import config from "config";
 
 import morgan from './config/morgan';
 
@@ -18,12 +19,10 @@ const expressApp = (router: Router, _mw?: string[]) => {
   app.use(express.json());
   app.use(morgan);
 
-  // TODO add express-openapi-validator
-
   app.use('/', router);
   app.use(notFoundMiddleware);
 
-  const port = process.env.PORT || randomPort();
+  const port = config.port || randomPort();
   app.listen(port, () => {
     log.info(`Listening: http://localhost:${port}`);
   });
