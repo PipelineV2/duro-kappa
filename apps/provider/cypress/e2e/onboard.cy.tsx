@@ -1,5 +1,5 @@
 it('onboards the user', () => {
-  cy.visit('http://localhost:3000/admin/onboard');
+  cy.visit('http://127.0.0.1:3000/admin/onboard');
 
   cy.get('[name=company_name]').type("my business")
   cy.get('[name=location]').type("your locations")
