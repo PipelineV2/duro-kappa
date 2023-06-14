@@ -13,7 +13,7 @@ arg NEXT_PUBLIC_API_URL
 
 env NEXT_PUBLIC_API_URL $NEXT_PUBLIC_API_URL
 
-run pnpm run build
+run pnpm build
 
 workdir /app/apps/provider
 
