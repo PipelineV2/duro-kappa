@@ -5,7 +5,7 @@ workdir /app
 
 copy . /app
 
-workdir /app 
+workdir /app
 
 run pnpm i
 
