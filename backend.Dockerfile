@@ -30,10 +30,10 @@ expose 4000
 
 from gplane/pnpm:node18 
 
-WORKDIR /app/
 
-COPY --from=base /app/*/(^(job)) /app
+COPY --from=base /app/shared package* pnpm* /app
 
+copy --from=base /app/backend/admin /app/backend/queue /app/backend/doorman ./app/backend/
 
 run pnpm i ts-node 
 
@@ -50,9 +50,8 @@ env PORT 4000
 
 expose 4000
 
+cmd ["npx", "ts-node", "/app/backend/doorman/src/index.ts"]
 
-CMD ["./app"]  
-cmd ["npx", "ts-node", "/app/src/index.ts"]
 
 
 
