@@ -14,7 +14,7 @@ env NEXT_PUBLIC_API_URL $NEXT_PUBLIC_API_URL
 
 workdir /app/provider
 
-run npm build
+run npm run build
 
 cmd ["npm", "run", "start"]
 
