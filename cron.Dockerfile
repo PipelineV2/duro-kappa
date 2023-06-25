@@ -24,7 +24,7 @@ COPY --from=base /app/shared /app/shared
 
 copy --from=base /app/backend/cron /app/backend/cron
 
-copy --from=base /app/package* /app/pnpm* /app
+copy --from=base /app/package* /app/pnpm* /app/
 
 workdir /app
 
