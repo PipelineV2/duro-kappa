@@ -3,19 +3,19 @@ from gplane/pnpm:node18
 
 workdir /app
 
-copy . /app
+copy ./apps/provider/ /app
 
-workdir /app
+workdir /app 
 
-run pnpm i
+run npm i
 
 arg NEXT_PUBLIC_API_URL 
 
 env NEXT_PUBLIC_API_URL $NEXT_PUBLIC_API_URL
 
-run pnpm build
+run npm build
 
-workdir /app/apps/provider
+workdir /app/provider
 
 cmd ["pnpm", "run", "start"]
 
