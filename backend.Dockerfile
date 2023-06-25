@@ -1,14 +1,16 @@
-from gplane/pnpm:node18 as base
+from node:18-alpine3.17 as base
 
 workdir /app
+
+run npm install -g pnpm
 
 copy . /app
 
 workdir /app 
 
-run pnpm i
+run npx pnpm i
 
-run pnpm run build
+run npx pnpm run build
 
 workdir /app/shared/database
 
@@ -28,14 +30,31 @@ env PORT 4000
 expose 4000
 
 
-from gplane/pnpm:node18 
+from node:18-alpine3.17 
 
+workdir /app
 
-COPY --from=base /app/shared package* pnpm* /app
+run npm install -g pnpm
 
-copy --from=base /app/backend/admin /app/backend/queue /app/backend/doorman ./app/backend/
+COPY --from=base /app/shared /app/shared
 
-run pnpm i ts-node 
+copy --from=base /app/backend/admin /app/backend/admin
+
+copy --from=base /app/backend/queue /app/backend/queue
+
+copy --from=base /app/backend/doorman /app/backend/doorman
+
+copy --from=base /app/package* /app/pnpm* /app
+
+workdir /app
+
+run npx pnpm i
+
+run npx pnpm i ts-node -w
+
+workdir /app/shared/database
+
+run npx prisma generate
 
 ARG DATABASE_URL
 
