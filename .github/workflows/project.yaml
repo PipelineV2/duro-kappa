@@ -21,9 +21,13 @@ jobs:
           run_install: true
 
       - name: run build
+        env:
+          NEXT_PUBLIC_API_URL: https://duro-be.onrender.com
         run: pnpm run build
 
       - name: start projects
+        env:
+          NEXT_PUBLIC_API_URL: https://duro-be.onrender.com
         run: pnpm run start &
 
       - name: run tests
