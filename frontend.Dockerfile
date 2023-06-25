@@ -1,5 +1,4 @@
-
-from gplane/pnpm:node18
+from node:18-alpine3.17
 
 workdir /app
 
@@ -13,10 +12,10 @@ arg NEXT_PUBLIC_API_URL
 
 env NEXT_PUBLIC_API_URL $NEXT_PUBLIC_API_URL
 
-run npm build
-
 workdir /app/provider
 
-cmd ["pnpm", "run", "start"]
+run npm build
+
+cmd ["npm", "run", "start"]
 
 
